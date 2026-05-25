@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,13 +31,8 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.expensetracker.app.core.theme.CharcoalGray
-import com.expensetracker.app.core.theme.DarkCard
-import com.expensetracker.app.core.theme.DimWhite
 import com.expensetracker.app.core.theme.EmeraldGreen
 import com.expensetracker.app.core.theme.ExpenseRed
-import com.expensetracker.app.core.theme.MutedWhite
-import com.expensetracker.app.core.theme.SoftWhite
 import com.expensetracker.app.domain.model.CategorySummary
 import com.expensetracker.app.domain.model.SpendingTrend
 import com.expensetracker.app.core.utils.CurrencyUtils
@@ -111,13 +107,13 @@ fun PieChart(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = summary.category,
-                        color = MutedWhite,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 12.sp
                     )
                 }
                 Text(
                     text = CurrencyUtils.format(summary.amount),
-                    color = SoftWhite,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium
                 )
@@ -160,8 +156,8 @@ fun BarChart(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = trend.month.take(3),
-                    color = DimWhite,
+                    text =                     trend.month.take(3),
+                    color = MaterialTheme.colorScheme.outline,
                     fontSize = 9.sp,
                     modifier = Modifier.width(24.dp)
                 )

@@ -1,26 +1,29 @@
 package com.expensetracker.app
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.expensetracker.app.core.theme.ExpenseTrackerTheme
-import com.expensetracker.app.core.theme.MatteBlack
+import com.expensetracker.app.core.theme.ThemeMode
 import com.expensetracker.app.navigation.NavGraph
 import com.expensetracker.app.navigation.Screen
 import com.expensetracker.app.ui.components.BottomNavBar
@@ -36,7 +39,29 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            ExpenseTrackerTheme {
+            val prefs = remember {
+                getSharedPreferences("app_settings", Context.MODE_PRIVATE)
+            }
+            var themeModeStr by remember { mutableStateOf(
+                prefs.getString("theme_mode", "SYSTEM") ?: "SYSTEM"
+            ) }
+
+            DisposableEffect(Unit) {
+                val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+                    if (key == "theme_mode") {
+                        themeModeStr = prefs.getString("theme_mode", "SYSTEM") ?: "SYSTEM"
+                    }
+                }
+                prefs.registerOnSharedPreferenceChangeListener(listener)
+                onDispose { prefs.unregisterOnSharedPreferenceChangeListener(listener) }
+            }
+
+            val themeMode = remember(themeModeStr) {
+                try { ThemeMode.valueOf(themeModeStr) }
+                catch (_: Exception) { ThemeMode.SYSTEM }
+            }
+
+            ExpenseTrackerTheme(themeMode = themeMode) {
                 MainApp()
             }
         }
@@ -57,7 +82,7 @@ fun MainApp() {
     )
 
     Scaffold(
-        containerColor = MatteBlack,
+        containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             if (showBottomBar) {
                 BottomNavBar(
@@ -81,7 +106,7 @@ fun MainApp() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(MatteBlack)
+                .background(MaterialTheme.colorScheme.background)
         ) {
             NavGraph(
                 navController = navController,

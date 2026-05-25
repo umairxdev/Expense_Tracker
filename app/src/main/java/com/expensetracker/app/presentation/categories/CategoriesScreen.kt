@@ -39,14 +39,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.expensetracker.app.core.theme.CharcoalGray
-import com.expensetracker.app.core.theme.DarkCard
-import com.expensetracker.app.core.theme.DarkCardElevated
+import androidx.compose.material3.MaterialTheme
 import com.expensetracker.app.core.theme.EmeraldGreen
 import com.expensetracker.app.core.theme.ExpenseRed
-import com.expensetracker.app.core.theme.MatteBlack
-import com.expensetracker.app.core.theme.MutedWhite
-import com.expensetracker.app.core.theme.SoftWhite
 import com.expensetracker.app.ui.components.CategoryIcon
 
 @Composable
@@ -59,7 +54,7 @@ fun CategoriesScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MatteBlack)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             Row(
@@ -69,11 +64,11 @@ fun CategoriesScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = onNavigateBack) {
-                    Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = SoftWhite)
+                    Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onSurface)
                 }
                 Text(
                     text = "Categories",
-                    color = SoftWhite,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -88,7 +83,7 @@ fun CategoriesScreen(
                 item {
                     Text(
                         text = "Expense Categories",
-                        color = MutedWhite,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 13.sp,
                         letterSpacing = 0.5.sp,
                         modifier = Modifier.padding(vertical = 8.dp)
@@ -105,7 +100,7 @@ fun CategoriesScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = "Income Categories",
-                        color = MutedWhite,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 13.sp,
                         letterSpacing = 0.5.sp,
                         modifier = Modifier.padding(vertical = 8.dp)
@@ -128,7 +123,7 @@ fun CategoriesScreen(
                 .align(Alignment.BottomEnd)
                 .padding(16.dp),
             containerColor = EmeraldGreen,
-            contentColor = MatteBlack
+            contentColor = MaterialTheme.colorScheme.background
         ) {
             Icon(Icons.Filled.Add, contentDescription = "Add Category")
         }
@@ -137,35 +132,35 @@ fun CategoriesScreen(
     if (state.showAddDialog) {
         AlertDialog(
             onDismissRequest = { viewModel.hideAddDialog() },
-            containerColor = DarkCardElevated,
-            title = { Text("Add Category", color = SoftWhite, fontWeight = FontWeight.Bold) },
+            containerColor = MaterialTheme.colorScheme.surface,
+            title = { Text("Add Category", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold) },
             text = {
                 Column {
                     OutlinedTextField(
                         value = state.addName,
                         onValueChange = { viewModel.setAddName(it) },
-                        label = { Text("Category Name", color = MutedWhite) },
+                        label = { Text("Category Name", color = MaterialTheme.colorScheme.onSurfaceVariant) },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedTextColor = SoftWhite,
-                            unfocusedTextColor = SoftWhite,
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                             focusedBorderColor = EmeraldGreen,
-                            unfocusedBorderColor = CharcoalGray
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
                         )
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = state.addDisplayName,
                         onValueChange = { viewModel.setAddDisplayName(it) },
-                        label = { Text("Display Name (optional)", color = MutedWhite) },
+                        label = { Text("Display Name (optional)", color = MaterialTheme.colorScheme.onSurfaceVariant) },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedTextColor = SoftWhite,
-                            unfocusedTextColor = SoftWhite,
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                             focusedBorderColor = EmeraldGreen,
-                            unfocusedBorderColor = CharcoalGray
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
                         )
                     )
                     Spacer(modifier = Modifier.height(12.dp))
@@ -193,7 +188,7 @@ fun CategoriesScreen(
             },
             dismissButton = {
                 TextButton(onClick = { viewModel.hideAddDialog() }) {
-                    Text("Cancel", color = MutedWhite)
+                    Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         )
@@ -202,12 +197,12 @@ fun CategoriesScreen(
     if (state.deleteConfirm != null) {
         AlertDialog(
             onDismissRequest = { viewModel.cancelDelete() },
-            containerColor = DarkCardElevated,
-            title = { Text("Delete Category", color = SoftWhite, fontWeight = FontWeight.Bold) },
+            containerColor = MaterialTheme.colorScheme.surface,
+            title = { Text("Delete Category", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold) },
             text = {
                 Text(
                     "Delete \"${state.deleteConfirm!!.displayName}\"? Existing transactions won't be affected.",
-                    color = MutedWhite
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             },
             confirmButton = {
@@ -217,7 +212,7 @@ fun CategoriesScreen(
             },
             dismissButton = {
                 TextButton(onClick = { viewModel.cancelDelete() }) {
-                    Text("Cancel", color = MutedWhite)
+                    Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         )
@@ -229,7 +224,7 @@ private fun CategoryRow(item: CategoryItem, onDelete: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(DarkCard, RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(12.dp))
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -238,7 +233,7 @@ private fun CategoryRow(item: CategoryItem, onDelete: () -> Unit) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = item.displayName,
-                color = SoftWhite,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium
             )

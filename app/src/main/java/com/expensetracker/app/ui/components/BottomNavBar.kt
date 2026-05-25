@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,9 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.expensetracker.app.core.theme.DarkSurface
 import com.expensetracker.app.core.theme.EmeraldGreen
-import com.expensetracker.app.core.theme.MutedWhite
 import com.expensetracker.app.navigation.BottomNavItem
 import com.expensetracker.app.navigation.bottomNavItems
 
@@ -39,7 +38,7 @@ fun BottomNavBar(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
-            .background(DarkSurface)
+            .background(MaterialTheme.colorScheme.surface)
             .padding(horizontal = 8.dp, vertical = 4.dp)
     ) {
         Row(
@@ -52,7 +51,7 @@ fun BottomNavBar(
             bottomNavItems.forEach { item ->
                 val isSelected = currentRoute == item.route
                 val iconColor by animateColorAsState(
-                    targetValue = if (isSelected) EmeraldGreen else MutedWhite,
+                    targetValue = if (isSelected) EmeraldGreen else MaterialTheme.colorScheme.onSurfaceVariant,
                     animationSpec = tween(200),
                     label = "navColor"
                 )

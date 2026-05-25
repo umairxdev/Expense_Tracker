@@ -40,17 +40,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.expensetracker.app.core.theme.CharcoalGray
 import com.expensetracker.app.core.theme.EmeraldGreen
-import com.expensetracker.app.core.theme.MatteBlack
-import com.expensetracker.app.core.theme.MutedWhite
-import com.expensetracker.app.core.theme.SoftWhite
 
 data class OnboardingPage(
     val icon: ImageVector,
@@ -94,7 +91,7 @@ fun OnboardingScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MatteBlack)
+            .background(MaterialTheme.colorScheme.background)
             .padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -131,7 +128,7 @@ fun OnboardingScreen(
 
                 Text(
                     text = pages[page].title,
-                    color = SoftWhite,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
@@ -141,7 +138,7 @@ fun OnboardingScreen(
 
                 Text(
                     text = pages[page].description,
-                    color = MutedWhite,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 15.sp,
                     textAlign = TextAlign.Center,
                     lineHeight = 22.sp
@@ -162,7 +159,7 @@ fun OnboardingScreen(
                         .clip(CircleShape)
                         .background(
                             if (index == currentPage) EmeraldGreen
-                            else CharcoalGray
+                            else MaterialTheme.colorScheme.outlineVariant
                         )
                 )
             }
@@ -184,7 +181,7 @@ fun OnboardingScreen(
             shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = EmeraldGreen,
-                contentColor = MatteBlack
+                contentColor = MaterialTheme.colorScheme.background
             )
         ) {
             Text(
@@ -199,7 +196,7 @@ fun OnboardingScreen(
             TextButton(onClick = { completeOnboarding() }) {
                 Text(
                     text = "Skip",
-                    color = MutedWhite,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 14.sp
                 )
             }

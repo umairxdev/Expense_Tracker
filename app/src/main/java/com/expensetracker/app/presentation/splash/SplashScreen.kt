@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import android.content.Context
 import androidx.compose.runtime.Composable
@@ -24,8 +25,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.expensetracker.app.core.theme.EmeraldGreen
-import com.expensetracker.app.core.theme.MatteBlack
-import com.expensetracker.app.core.theme.SoftWhite
 import kotlinx.coroutines.delay
 
 @Composable
@@ -58,7 +57,7 @@ fun SplashScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MatteBlack),
+            .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -85,7 +84,7 @@ fun SplashScreen(
                 text = "ExpenseTracker",
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
-                color = SoftWhite,
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.alpha(alpha.value)
             )
 
@@ -93,8 +92,7 @@ fun SplashScreen(
 
             Text(
                 text = "Track smart. Spend wisely.",
-                fontSize = 14.sp,
-                color = SoftWhite.copy(alpha = 0.6f),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                 modifier = Modifier.alpha(alpha.value)
             )
         }

@@ -1,2 +1,2 @@
-e: file:///C:/Users/Water%20Mark%20IT/Documents/projects/ExpenseTracker/app/src/main/java/com/expensetracker/app/presentation/recurring/RecurringScreen.kt:189:29 Type 'androidx.compose.runtime.MutableState<kotlin.Boolean>' has no method 'setValue(Nothing?, KMutableProperty0<*>, Boolean)', so it cannot serve as a delegate for var (read-write property).
-e: file:///C:/Users/Water%20Mark%20IT/Documents/projects/ExpenseTracker/app/src/main/java/com/expensetracker/app/presentation/recurring/RecurringScreen.kt:190:30 Type 'androidx.compose.runtime.MutableState<kotlin.Boolean>' has no method 'setValue(Nothing?, KMutableProperty0<*>, Boolean)', so it cannot serve as a delegate for var (read-write property).
+> Task :app:compileDebugKotlin FAILED
+e: file:///C:/Users/Water%20Mark%20IT/Documents/projects/ExpenseTracker/app/src/main/java/com/expensetracker/app/ui/components/AnimatedCard.kt:130:14 Unresolved reference 'matchParentSize'.

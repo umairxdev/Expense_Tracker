@@ -37,13 +37,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.expensetracker.app.core.theme.CharcoalGray
-import com.expensetracker.app.core.theme.DarkCardElevated
+import androidx.compose.material3.MaterialTheme
 import com.expensetracker.app.core.theme.EmeraldGreen
 import com.expensetracker.app.core.theme.ExpenseRed
-import com.expensetracker.app.core.theme.MatteBlack
-import com.expensetracker.app.core.theme.MutedWhite
-import com.expensetracker.app.core.theme.SoftWhite
 import com.expensetracker.app.core.utils.CurrencyUtils
 import com.expensetracker.app.domain.model.Transaction
 import com.expensetracker.app.ui.components.EmptyState
@@ -60,7 +56,7 @@ fun HistoryScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MatteBlack)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         Row(
             modifier = Modifier
@@ -69,11 +65,11 @@ fun HistoryScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = onNavigateBack) {
-                Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = SoftWhite)
+                Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onSurface)
             }
             Text(
                 text = "History",
-                color = SoftWhite,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -86,19 +82,19 @@ fun HistoryScreen(
                 onValueChange = { viewModel.setSearchQuery(it) },
                 modifier = Modifier.fillMaxWidth(),
                 placeholder = {
-                    Text("Search transactions...", color = MutedWhite.copy(alpha = 0.5f))
+                    Text("Search transactions...", color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f))
                 },
                 leadingIcon = {
-                    Icon(Icons.Filled.Search, contentDescription = null, tint = MutedWhite)
+                    Icon(Icons.Filled.Search, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                 },
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = EmeraldGreen,
-                    unfocusedBorderColor = CharcoalGray,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
                     cursorColor = EmeraldGreen,
-                    focusedTextColor = SoftWhite,
-                    unfocusedTextColor = SoftWhite
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                 )
             )
 
@@ -114,13 +110,13 @@ fun HistoryScreen(
                     val isSelected = state.selectedFilter == chip
                     Text(
                         text = chip,
-                        color = if (isSelected) MatteBlack else MutedWhite,
+                        color = if (isSelected) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 11.sp,
                         fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
                         modifier = Modifier
                             .clip(RoundedCornerShape(8.dp))
                             .background(
-                                if (isSelected) EmeraldGreen else CharcoalGray
+                                if (isSelected) EmeraldGreen else MaterialTheme.colorScheme.outlineVariant
                             )
                             .clickable { viewModel.setFilter(chip) }
                             .padding(horizontal = 12.dp, vertical = 6.dp)
@@ -161,14 +157,14 @@ fun HistoryScreen(
         val txn = deleteTarget!!
         AlertDialog(
             onDismissRequest = { deleteTarget = null },
-            containerColor = DarkCardElevated,
+            containerColor = MaterialTheme.colorScheme.surface,
             title = {
-                Text("Delete Transaction", color = SoftWhite, fontWeight = FontWeight.Bold)
+                Text("Delete Transaction", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
             },
             text = {
                 Text(
                     "Delete ${CurrencyUtils.format(txn.amount)} ${txn.category.lowercase().replace("_", " ")} from ${txn.type.name.lowercase().replaceFirstChar { it.uppercase() }}? This cannot be undone.",
-                    color = MutedWhite
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             },
             confirmButton = {
@@ -181,7 +177,7 @@ fun HistoryScreen(
             },
             dismissButton = {
                 TextButton(onClick = { deleteTarget = null }) {
-                    Text("Cancel", color = MutedWhite)
+                    Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         )

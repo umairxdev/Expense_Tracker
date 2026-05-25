@@ -2,7 +2,6 @@ package com.expensetracker.app.presentation.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,7 +26,11 @@ import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Repeat
+import androidx.compose.material.icons.filled.SettingsBrightness
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
@@ -48,13 +51,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.expensetracker.app.core.theme.CharcoalGray
-import com.expensetracker.app.core.theme.DarkCardElevated
+import androidx.compose.material3.MaterialTheme
 import com.expensetracker.app.core.theme.EmeraldGreen
 import com.expensetracker.app.core.theme.ExpenseRed
-import com.expensetracker.app.core.theme.MatteBlack
-import com.expensetracker.app.core.theme.MutedWhite
-import com.expensetracker.app.core.theme.SoftWhite
 import com.expensetracker.app.core.utils.CurrencyUtils
 
 @Composable
@@ -68,11 +67,12 @@ fun SettingsScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     var showPrivacy by remember { mutableStateOf(false) }
+    var showThemePicker by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MatteBlack)
+            .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding()
     ) {
         Row(
@@ -82,11 +82,11 @@ fun SettingsScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = onNavigateBack) {
-                Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = SoftWhite)
+                Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onSurface)
             }
             Text(
                 text = "Settings",
-                color = SoftWhite,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -123,13 +123,13 @@ fun SettingsScreen(
                 Column {
                     Text(
                         text = "ExpenseTracker",
-                        color = SoftWhite,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
                         text = "v${state.appVersion}",
-                        color = MutedWhite,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 12.sp
                     )
                 }
@@ -156,8 +156,29 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
+                text = "THEME",
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                fontSize = 10.sp,
+                letterSpacing = 1.sp,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+
+            val themeLabel = when (state.themeMode) {
+                "SYSTEM" -> "System Default"
+                "LIGHT" -> "Light"
+                else -> "Dark"
+            }
+            SettingsMenuItem(
+                icon = Icons.Filled.Palette,
+                label = "App Theme: $themeLabel",
+                onClick = { showThemePicker = true }
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
                 text = "CURRENCY",
-                color = MutedWhite.copy(alpha = 0.6f),
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                 fontSize = 10.sp,
                 letterSpacing = 1.sp,
                 modifier = Modifier.padding(vertical = 8.dp)
@@ -173,7 +194,7 @@ fun SettingsScreen(
 
             Text(
                 text = "DATA MANAGEMENT",
-                color = MutedWhite.copy(alpha = 0.6f),
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                 fontSize = 10.sp,
                 letterSpacing = 1.sp,
                 modifier = Modifier.padding(vertical = 8.dp)
@@ -195,7 +216,7 @@ fun SettingsScreen(
 
             Text(
                 text = "PRIVACY",
-                color = MutedWhite.copy(alpha = 0.6f),
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                 fontSize = 10.sp,
                 letterSpacing = 1.sp,
                 modifier = Modifier.padding(vertical = 8.dp)
@@ -211,7 +232,7 @@ fun SettingsScreen(
 
             Text(
                 text = "All data is stored locally on your device.\nNo internet connection required.\n100% private and secure.",
-                color = MutedWhite.copy(alpha = 0.6f),
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                 fontSize = 12.sp,
                 lineHeight = 18.sp
             )
@@ -221,14 +242,14 @@ fun SettingsScreen(
     if (state.showResetConfirm) {
         AlertDialog(
             onDismissRequest = { viewModel.dismissResetConfirm() },
-            containerColor = DarkCardElevated,
+            containerColor = MaterialTheme.colorScheme.surface,
             title = {
-                Text("Reset All Data", color = SoftWhite, fontWeight = FontWeight.Bold)
+                Text("Reset All Data", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
             },
             text = {
                 Text(
                     "This will permanently delete all transactions, budgets, recurring payments, and custom categories. This action cannot be undone.",
-                    color = MutedWhite
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             },
             confirmButton = {
@@ -238,7 +259,7 @@ fun SettingsScreen(
             },
             dismissButton = {
                 TextButton(onClick = { viewModel.dismissResetConfirm() }) {
-                    Text("Cancel", color = MutedWhite)
+                    Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         )
@@ -247,11 +268,11 @@ fun SettingsScreen(
     if (state.showResetResult) {
         AlertDialog(
             onDismissRequest = { viewModel.dismissResetResult() },
-            containerColor = DarkCardElevated,
+            containerColor = MaterialTheme.colorScheme.surface,
             title = {
-                Text("Done", color = SoftWhite, fontWeight = FontWeight.Bold)
+                Text("Done", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
             },
-            text = { Text(state.resetMessage, color = MutedWhite) },
+            text = { Text(state.resetMessage, color = MaterialTheme.colorScheme.onSurfaceVariant) },
             confirmButton = {
                 TextButton(onClick = { viewModel.dismissResetResult() }) {
                     Text("OK", color = EmeraldGreen)
@@ -263,15 +284,15 @@ fun SettingsScreen(
     if (showPrivacy) {
         AlertDialog(
             onDismissRequest = { showPrivacy = false },
-            containerColor = DarkCardElevated,
+            containerColor = MaterialTheme.colorScheme.surface,
             title = {
-                Text("Privacy Policy", color = SoftWhite, fontWeight = FontWeight.Bold)
+                Text("Privacy Policy", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
             },
             text = {
                 Column {
                     Text(
                         "Your data belongs to you.",
-                        color = SoftWhite,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp
                     )
@@ -280,7 +301,7 @@ fun SettingsScreen(
                         "ExpenseTracker does not collect, store, or transmit any personal data. " +
                                 "All your financial information, transactions, budgets, and settings are stored " +
                                         "exclusively on your device in a local database.",
-                            color = MutedWhite,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontSize = 12.sp,
                             lineHeight = 18.sp
                     )
@@ -289,7 +310,7 @@ fun SettingsScreen(
                             "No internet connection is required to use this app. " +
                                         "We do not use analytics services, crash reporting, or third-party SDKs " +
                                         "that access your data.",
-                            color = MutedWhite,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontSize = 12.sp,
                             lineHeight = 18.sp
                     )
@@ -297,7 +318,7 @@ fun SettingsScreen(
                     Text(
                             "If you choose to export or share data (backup or PDF), " +
                                         "that action is initiated by you and controlled entirely by your device's share system.",
-                            color = MutedWhite.copy(alpha = 0.7f),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                             fontSize = 11.sp,
                             lineHeight = 16.sp
                     )
@@ -311,12 +332,73 @@ fun SettingsScreen(
         )
     }
 
+    if (showThemePicker) {
+        AlertDialog(
+            onDismissRequest = { showThemePicker = false },
+            containerColor = MaterialTheme.colorScheme.surface,
+            title = {
+                Text("App Theme", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
+            },
+            text = {
+                Column {
+                    listOf(
+                        Triple("SYSTEM", Icons.Filled.SettingsBrightness, "Follow your device settings"),
+                        Triple("LIGHT", Icons.Filled.LightMode, "Always light theme"),
+                        Triple("DARK", Icons.Filled.DarkMode, "Always dark theme")
+                    ).forEach { (mode, icon, desc) ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(8.dp))
+                                .then(
+                                    if (state.themeMode == mode) Modifier.background(EmeraldGreen.copy(alpha = 0.1f))
+                                    else Modifier
+                                )
+                                .clickable {
+                                    viewModel.setThemeMode(mode)
+                                    showThemePicker = false
+                                }
+                                .padding(12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = icon,
+                                contentDescription = null,
+                                tint = if (state.themeMode == mode) EmeraldGreen else MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.size(24.dp)
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Column {
+                                Text(
+                                    text = mode.lowercase().replaceFirstChar { it.uppercase() },
+                                    color = if (state.themeMode == mode) EmeraldGreen else MaterialTheme.colorScheme.onSurface,
+                                    fontSize = 14.sp,
+                                    fontWeight = if (state.themeMode == mode) FontWeight.SemiBold else FontWeight.Normal
+                                )
+                                Text(
+                                    text = desc,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    fontSize = 12.sp
+                                )
+                            }
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showThemePicker = false }) {
+                    Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+        )
+    }
+
     if (state.showCurrencyPicker) {
         AlertDialog(
             onDismissRequest = { viewModel.dismissCurrencyPicker() },
-            containerColor = DarkCardElevated,
+            containerColor = MaterialTheme.colorScheme.surface,
             title = {
-                Text("Select Currency", color = SoftWhite, fontWeight = FontWeight.Bold)
+                Text("Select Currency", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
             },
             text = {
                 val currencies = CurrencyUtils.availableCurrencies
@@ -338,7 +420,7 @@ fun SettingsScreen(
                         ) {
                             Text(
                                 text = label,
-                                color = if (state.selectedCurrency == code) EmeraldGreen else SoftWhite,
+                                color = if (state.selectedCurrency == code) EmeraldGreen else MaterialTheme.colorScheme.onSurface,
                                 fontSize = 13.sp,
                                 fontWeight = if (state.selectedCurrency == code) FontWeight.SemiBold else FontWeight.Normal
                             )
@@ -348,7 +430,7 @@ fun SettingsScreen(
             },
             confirmButton = {
                 TextButton(onClick = { viewModel.dismissCurrencyPicker() }) {
-                    Text("Cancel", color = MutedWhite)
+                    Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         )
@@ -367,7 +449,7 @@ private fun SettingsMenuItem(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(DarkCardElevated)
+            .background(MaterialTheme.colorScheme.surface)
             .clickable(enabled = enabled, onClick = onClick)
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -381,7 +463,7 @@ private fun SettingsMenuItem(
         Spacer(modifier = Modifier.width(12.dp))
         Text(
             text = label,
-            color = if (enabled) SoftWhite else MutedWhite.copy(alpha = 0.5f),
+            color = if (enabled) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
             fontSize = 14.sp,
             fontWeight = FontWeight.Medium,
             modifier = Modifier.weight(1f)
@@ -389,7 +471,7 @@ private fun SettingsMenuItem(
         Icon(
             imageVector = Icons.Filled.ChevronRight,
             contentDescription = null,
-            tint = MutedWhite,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.size(20.dp)
         )
     }

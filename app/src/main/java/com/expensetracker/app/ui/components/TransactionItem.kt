@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,12 +30,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.expensetracker.app.core.theme.CharcoalGray
-import com.expensetracker.app.core.theme.DarkCard
 import com.expensetracker.app.core.theme.EmeraldGreen
 import com.expensetracker.app.core.theme.ExpenseRed
-import com.expensetracker.app.core.theme.MutedWhite
-import com.expensetracker.app.core.theme.SoftWhite
 import com.expensetracker.app.core.utils.CurrencyUtils
 import com.expensetracker.app.core.utils.DateUtils
 import com.expensetracker.app.domain.model.ExpenseCategory
@@ -74,7 +71,7 @@ fun TransactionItem(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(DarkCard)
+            .background(MaterialTheme.colorScheme.surfaceVariant)
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -98,14 +95,14 @@ fun TransactionItem(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = categoryName,
-                color = SoftWhite,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium
             )
             if (transaction.note.isNotEmpty()) {
                 Text(
                     text = transaction.note,
-                    color = MutedWhite,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 11.sp,
                     maxLines = 1
                 )
@@ -113,7 +110,7 @@ fun TransactionItem(
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = DateUtils.formatDisplay(date),
-                color = MutedWhite,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 10.sp
             )
         }
@@ -133,7 +130,7 @@ fun TransactionItem(
                 Icon(
                     imageVector = Icons.Filled.Delete,
                     contentDescription = "Delete",
-                    tint = MutedWhite.copy(alpha = 0.5f),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
                     modifier = Modifier.size(18.dp)
                 )
             }

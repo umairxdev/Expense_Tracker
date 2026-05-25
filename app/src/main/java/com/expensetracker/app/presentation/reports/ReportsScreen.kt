@@ -31,12 +31,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.expensetracker.app.core.theme.DarkCardElevated
+import androidx.compose.material3.MaterialTheme
 import com.expensetracker.app.core.theme.EmeraldGreen
 import com.expensetracker.app.core.theme.ExpenseRed
-import com.expensetracker.app.core.theme.MatteBlack
-import com.expensetracker.app.core.theme.MutedWhite
-import com.expensetracker.app.core.theme.SoftWhite
 import com.expensetracker.app.core.utils.CurrencyUtils
 import com.expensetracker.app.ui.components.BarChart
 
@@ -50,7 +47,7 @@ fun ReportsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MatteBlack)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         Row(
             modifier = Modifier
@@ -59,11 +56,11 @@ fun ReportsScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = onNavigateBack) {
-                Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = SoftWhite)
+                Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onSurface)
             }
             Text(
                 text = "Reports",
-                color = SoftWhite,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -83,19 +80,19 @@ fun ReportsScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(16.dp))
-                        .background(DarkCardElevated)
+                        .background(MaterialTheme.colorScheme.surface)
                         .padding(16.dp)
                 ) {
                     Text(
                         text = "Income vs Expenses",
-                        color = SoftWhite,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 15.sp,
                         fontWeight = FontWeight.SemiBold
                     )
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = "Last 12 months",
-                        color = MutedWhite,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 12.sp
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -112,7 +109,7 @@ fun ReportsScreen(
                                     .background(EmeraldGreen)
                             )
                             Spacer(modifier = Modifier.width(6.dp))
-                            Text("Income", color = MutedWhite, fontSize = 12.sp)
+                            Text("Income", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
                         }
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Box(
@@ -122,7 +119,7 @@ fun ReportsScreen(
                                     .background(ExpenseRed)
                             )
                             Spacer(modifier = Modifier.width(6.dp))
-                            Text("Expenses", color = MutedWhite, fontSize = 12.sp)
+                            Text("Expenses", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
                         }
                     }
 
@@ -139,7 +136,7 @@ fun ReportsScreen(
             // Monthly Summary
             Text(
                 text = "Monthly Summary",
-                color = SoftWhite,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 12.dp)
@@ -150,7 +147,7 @@ fun ReportsScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(16.dp))
-                        .background(DarkCardElevated)
+                        .background(MaterialTheme.colorScheme.surface)
                         .padding(16.dp)
                         .padding(vertical = 4.dp)
                 ) {
@@ -161,13 +158,13 @@ fun ReportsScreen(
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = "${report.month} ${report.year}",
-                                color = SoftWhite,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.SemiBold
                             )
                             Text(
                                 text = "${report.transactionCount} transactions",
-                                color = MutedWhite,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 fontSize = 12.sp
                             )
                         }
@@ -175,7 +172,7 @@ fun ReportsScreen(
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(
                                     "Inc ",
-                                    color = MutedWhite.copy(alpha = 0.6f),
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                                     fontSize = 11.sp
                                 )
                                 Text(
@@ -189,7 +186,7 @@ fun ReportsScreen(
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(
                                     "Exp ",
-                                    color = MutedWhite.copy(alpha = 0.6f),
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                                     fontSize = 11.sp
                                 )
                                 Text(

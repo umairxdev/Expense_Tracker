@@ -49,16 +49,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.expensetracker.app.core.theme.CharcoalGray
-import com.expensetracker.app.core.theme.DarkCard
-import com.expensetracker.app.core.theme.DarkCardElevated
-import com.expensetracker.app.core.theme.DimWhite
+import androidx.compose.material3.MaterialTheme
 import com.expensetracker.app.core.theme.EmeraldGreen
-import com.expensetracker.app.core.theme.EmeraldGlow
 import com.expensetracker.app.core.theme.ExpenseRed
-import com.expensetracker.app.core.theme.MatteBlack
-import com.expensetracker.app.core.theme.MutedWhite
-import com.expensetracker.app.core.theme.SoftWhite
 import com.expensetracker.app.core.utils.CurrencyUtils
 import com.expensetracker.app.core.utils.DateUtils
 import com.expensetracker.app.ui.components.AnimatedCard
@@ -81,12 +74,12 @@ fun DashboardScreen(
     var expanded by remember { mutableStateOf(false) }
 
     Scaffold(
-        containerColor = MatteBlack,
+        containerColor = MaterialTheme.colorScheme.background,
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { expanded = !expanded },
                 containerColor = EmeraldGreen,
-                contentColor = MatteBlack,
+                contentColor = MaterialTheme.colorScheme.background,
                 shape = CircleShape,
                 modifier = Modifier.size(56.dp)
             ) {
@@ -114,7 +107,7 @@ fun DashboardScreen(
             // Header
             Text(
                 text = "Overview",
-                color = SoftWhite,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -123,7 +116,7 @@ fun DashboardScreen(
                     java.time.LocalDate.now().year,
                     java.time.LocalDate.now().monthValue
                 ),
-                color = MutedWhite,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 13.sp
             )
 
@@ -165,7 +158,7 @@ fun DashboardScreen(
                         Column {
                             Text(
                                 text = "Spending by Category",
-                                color = SoftWhite,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.SemiBold
                             )
@@ -216,7 +209,7 @@ fun DashboardScreen(
                         ) {
                             Text(
                                 text = "Recent Transactions",
-                                color = SoftWhite,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.SemiBold
                             )
@@ -301,8 +294,8 @@ private fun BalanceCard(
             .background(
                 brush = Brush.linearGradient(
                     colors = listOf(
-                        DarkCardElevated,
-                        DarkCard
+                        MaterialTheme.colorScheme.surface,
+                        MaterialTheme.colorScheme.surfaceVariant
                     )
                 )
             )
@@ -310,7 +303,7 @@ private fun BalanceCard(
         Box(
             modifier = Modifier
                 .matchParentSize()
-                .background(EmeraldGlow, RoundedCornerShape(20.dp))
+                .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(20.dp))
         )
 
         Column(
@@ -320,14 +313,14 @@ private fun BalanceCard(
         ) {
             Text(
                 text = "Current Balance",
-                color = MutedWhite,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 12.sp,
                 letterSpacing = 0.5.sp
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = CurrencyUtils.format(animatedBalance.toDouble()),
-                color = SoftWhite,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -346,7 +339,7 @@ private fun QuickStatCard(
         Column {
             Text(
                 text = label,
-                color = MutedWhite,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 11.sp,
                 letterSpacing = 0.5.sp
             )
@@ -382,7 +375,7 @@ private fun QuickActionButton(
             Spacer(modifier = Modifier.height(6.dp))
             Text(
                 text = label,
-                color = SoftWhite,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Medium
             )
@@ -399,7 +392,7 @@ private fun DashboardFloatingOption(
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(12.dp))
-            .background(DarkCardElevated)
+            .background(MaterialTheme.colorScheme.surface)
             .clickable { onClick() }
             .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {

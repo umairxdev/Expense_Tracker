@@ -25,11 +25,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.material3.MaterialTheme
 import com.expensetracker.app.core.theme.EmeraldGreen
 import com.expensetracker.app.core.theme.ExpenseRed
-import com.expensetracker.app.core.theme.MatteBlack
-import com.expensetracker.app.core.theme.MutedWhite
-import com.expensetracker.app.core.theme.SoftWhite
 import com.expensetracker.app.core.utils.CurrencyUtils
 import com.expensetracker.app.ui.components.AnimatedCard
 import com.expensetracker.app.ui.components.LineChart
@@ -46,7 +44,7 @@ fun AnalyticsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MatteBlack)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         Row(
             modifier = Modifier
@@ -55,11 +53,11 @@ fun AnalyticsScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = onNavigateBack) {
-                Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = SoftWhite)
+                Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onSurface)
             }
             Text(
                 text = "Analytics",
-                color = SoftWhite,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -108,7 +106,7 @@ fun AnalyticsScreen(
                 AnimatedCard(modifier = Modifier.fillMaxWidth()) {
                     Text(
                         text = "Spending Trends",
-                        color = SoftWhite,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 15.sp,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -128,7 +126,7 @@ fun AnalyticsScreen(
                     Column {
                         Text(
                             text = "Category Breakdown",
-                            color = SoftWhite,
+                            color = MaterialTheme.colorScheme.onSurface,
                             fontSize = 15.sp,
                             fontWeight = FontWeight.SemiBold
                         )

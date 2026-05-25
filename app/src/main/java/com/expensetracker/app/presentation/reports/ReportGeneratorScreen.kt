@@ -44,12 +44,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.expensetracker.app.core.theme.CharcoalGray
-import com.expensetracker.app.core.theme.DarkCardElevated
+import androidx.compose.material3.MaterialTheme
 import com.expensetracker.app.core.theme.EmeraldGreen
-import com.expensetracker.app.core.theme.MatteBlack
-import com.expensetracker.app.core.theme.MutedWhite
-import com.expensetracker.app.core.theme.SoftWhite
 import com.expensetracker.app.core.utils.CurrencyUtils
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -75,7 +71,7 @@ fun ReportGeneratorScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MatteBlack)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         Row(
             modifier = Modifier
@@ -84,11 +80,11 @@ fun ReportGeneratorScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = onNavigateBack) {
-                Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = SoftWhite)
+                Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onSurface)
             }
             Text(
                 text = "Generate Report",
-                color = SoftWhite,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -104,7 +100,7 @@ fun ReportGeneratorScreen(
 
             Text(
                 text = "Select Date Range",
-                color = MutedWhite,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 12.sp,
                 letterSpacing = 0.5.sp
             )
@@ -133,14 +129,14 @@ fun ReportGeneratorScreen(
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = EmeraldGreen,
-                    contentColor = MatteBlack
+                    contentColor = MaterialTheme.colorScheme.background
                 ),
                 enabled = !state.isGenerating
             ) {
                 if (state.isGenerating) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(24.dp),
-                        color = MatteBlack,
+                        color = MaterialTheme.colorScheme.background,
                         strokeWidth = 2.dp
                     )
                 } else {
@@ -160,7 +156,7 @@ fun ReportGeneratorScreen(
 
             Text(
                 text = "The report includes income & expense summary, daily trend chart, and all transactions within the selected date range.",
-                color = MutedWhite.copy(alpha = 0.6f),
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                 fontSize = 12.sp,
                 lineHeight = 18.sp
             )
@@ -180,20 +176,20 @@ fun ReportGeneratorScreen(
                 }) { Text("Set", color = EmeraldGreen) }
             },
             dismissButton = {
-                TextButton(onClick = { showStartPicker = false }) { Text("Cancel", color = MutedWhite) }
+                TextButton(onClick = { showStartPicker = false }) { Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant) }
             },
             colors = androidx.compose.material3.DatePickerDefaults.colors(
-                containerColor = DarkCardElevated,
-                titleContentColor = SoftWhite,
-                headlineContentColor = SoftWhite,
-                weekdayContentColor = MutedWhite,
-                subheadContentColor = MutedWhite,
-                yearContentColor = MutedWhite,
+                containerColor = MaterialTheme.colorScheme.surface,
+                titleContentColor = MaterialTheme.colorScheme.onSurface,
+                headlineContentColor = MaterialTheme.colorScheme.onSurface,
+                weekdayContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                subheadContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                yearContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 currentYearContentColor = EmeraldGreen,
-                selectedYearContentColor = MatteBlack,
-                selectedDayContentColor = MatteBlack,
+                selectedYearContentColor = MaterialTheme.colorScheme.background,
+                selectedDayContentColor = MaterialTheme.colorScheme.background,
                 selectedDayContainerColor = EmeraldGreen,
-                dayContentColor = SoftWhite,
+                dayContentColor = MaterialTheme.colorScheme.onSurface,
                 todayContentColor = EmeraldGreen,
                 todayDateBorderColor = EmeraldGreen
             )
@@ -215,20 +211,20 @@ fun ReportGeneratorScreen(
                 }) { Text("Set", color = EmeraldGreen) }
             },
             dismissButton = {
-                TextButton(onClick = { showEndPicker = false }) { Text("Cancel", color = MutedWhite) }
+                TextButton(onClick = { showEndPicker = false }) { Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant) }
             },
             colors = androidx.compose.material3.DatePickerDefaults.colors(
-                containerColor = DarkCardElevated,
-                titleContentColor = SoftWhite,
-                headlineContentColor = SoftWhite,
-                weekdayContentColor = MutedWhite,
-                subheadContentColor = MutedWhite,
-                yearContentColor = MutedWhite,
+                containerColor = MaterialTheme.colorScheme.surface,
+                titleContentColor = MaterialTheme.colorScheme.onSurface,
+                headlineContentColor = MaterialTheme.colorScheme.onSurface,
+                weekdayContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                subheadContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                yearContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 currentYearContentColor = EmeraldGreen,
-                selectedYearContentColor = MatteBlack,
-                selectedDayContentColor = MatteBlack,
+                selectedYearContentColor = MaterialTheme.colorScheme.background,
+                selectedDayContentColor = MaterialTheme.colorScheme.background,
                 selectedDayContainerColor = EmeraldGreen,
-                dayContentColor = SoftWhite,
+                dayContentColor = MaterialTheme.colorScheme.onSurface,
                 todayContentColor = EmeraldGreen,
                 todayDateBorderColor = EmeraldGreen
             )
@@ -240,15 +236,15 @@ fun ReportGeneratorScreen(
     if (state.showResult) {
         AlertDialog(
             onDismissRequest = { viewModel.dismissResult() },
-            containerColor = DarkCardElevated,
+            containerColor = MaterialTheme.colorScheme.surface,
             title = {
                 Text(
                     if (state.resultMessage.contains("success")) "Success" else "Error",
-                    color = SoftWhite,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.Bold
                 )
             },
-            text = { Text(state.resultMessage, color = MutedWhite) },
+            text = { Text(state.resultMessage, color = MaterialTheme.colorScheme.onSurfaceVariant) },
             confirmButton = {
                 TextButton(onClick = { viewModel.dismissResult() }) {
                     Text("OK", color = EmeraldGreen)
@@ -268,7 +264,7 @@ private fun DateSelector(
     Column {
         Text(
             text = label,
-            color = MutedWhite,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontSize = 12.sp,
             modifier = Modifier.padding(bottom = 4.dp)
         )
@@ -276,7 +272,7 @@ private fun DateSelector(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(12.dp))
-                .background(DarkCardElevated)
+                .background(MaterialTheme.colorScheme.surface)
                 .clickable(onClick = onClick)
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -290,7 +286,7 @@ private fun DateSelector(
             Spacer(modifier = Modifier.size(12.dp))
             Text(
                 text = dateFormat.format(Date(date)),
-                color = SoftWhite,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium
             )

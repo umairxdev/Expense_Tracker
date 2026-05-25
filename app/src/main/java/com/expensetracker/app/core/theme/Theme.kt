@@ -1,8 +1,10 @@
 package com.expensetracker.app.core.theme
 
 import android.app.Activity
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
@@ -23,7 +25,7 @@ private val DarkColorScheme = darkColorScheme(
     onTertiary = SoftWhite,
     background = MatteBlack,
     onBackground = SoftWhite,
-    surface = DarkSurface,
+    surface = DarkCardElevated,
     onSurface = SoftWhite,
     surfaceVariant = DarkCard,
     onSurfaceVariant = MutedWhite,
@@ -36,11 +38,45 @@ private val DarkColorScheme = darkColorScheme(
     surfaceTint = EmeraldGreen
 )
 
+private val LightColorScheme = lightColorScheme(
+    primary = EmeraldGreen,
+    onPrimary = Color.White,
+    primaryContainer = EmeraldGlowLight,
+    onPrimaryContainer = EmeraldDark,
+    secondary = LightBorder,
+    onSecondary = LightTextPrimary,
+    secondaryContainer = LightCard,
+    onSecondaryContainer = LightTextSecondary,
+    tertiary = EmeraldDark,
+    onTertiary = Color.White,
+    background = LightBackground,
+    onBackground = LightTextPrimary,
+    surface = LightSurface,
+    onSurface = LightTextPrimary,
+    surfaceVariant = LightCard,
+    onSurfaceVariant = LightTextSecondary,
+    outline = LightTextDim,
+    outlineVariant = LightBorder,
+    error = ExpenseRed,
+    onError = Color.White,
+    inverseSurface = MatteBlack,
+    inverseOnSurface = SoftWhite,
+    surfaceTint = EmeraldGreen
+)
+
+enum class ThemeMode { SYSTEM, LIGHT, DARK }
+
 @Composable
 fun ExpenseTrackerTheme(
+    themeMode: ThemeMode = ThemeMode.SYSTEM,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = DarkColorScheme
+    val isDark = when (themeMode) {
+        ThemeMode.SYSTEM -> isSystemInDarkTheme()
+        ThemeMode.LIGHT -> false
+        ThemeMode.DARK -> true
+    }
+    val colorScheme = if (isDark) DarkColorScheme else LightColorScheme
     val view = LocalView.current
 
     if (!view.isInEditMode) {
@@ -48,8 +84,8 @@ fun ExpenseTrackerTheme(
             val window = (view.context as Activity).window
             window.statusBarColor = Color.Transparent.toArgb()
             window.navigationBarColor = Color.Transparent.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
-            WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = false
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !isDark
+            WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = !isDark
         }
     }
 

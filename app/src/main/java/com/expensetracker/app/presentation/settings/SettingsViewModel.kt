@@ -23,7 +23,8 @@ data class SettingsUiState(
     val showResetResult: Boolean = false,
     val resetMessage: String = "",
     val selectedCurrency: String = "PKR",
-    val showCurrencyPicker: Boolean = false
+    val showCurrencyPicker: Boolean = false,
+    val themeMode: String = "SYSTEM"
 )
 
 @HiltViewModel
@@ -38,7 +39,10 @@ class SettingsViewModel @Inject constructor(
     private val prefs = application.getSharedPreferences("app_settings", Context.MODE_PRIVATE)
 
     private val _uiState = MutableStateFlow(
-        SettingsUiState(selectedCurrency = CurrencyUtils.currencyCode)
+        SettingsUiState(
+            selectedCurrency = CurrencyUtils.currencyCode,
+            themeMode = prefs.getString("theme_mode", "SYSTEM") ?: "SYSTEM"
+        )
     )
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
 
@@ -89,5 +93,10 @@ class SettingsViewModel @Inject constructor(
         prefs.edit().putString("currency_code", code).apply()
         CurrencyUtils.currencyCode = code
         _uiState.value = _uiState.value.copy(selectedCurrency = code, showCurrencyPicker = false)
+    }
+
+    fun setThemeMode(mode: String) {
+        prefs.edit().putString("theme_mode", mode).apply()
+        _uiState.value = _uiState.value.copy(themeMode = mode)
     }
 }

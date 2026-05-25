@@ -47,13 +47,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.expensetracker.app.core.theme.CharcoalGray
-import com.expensetracker.app.core.theme.DarkCardElevated
+import androidx.compose.material3.MaterialTheme
 import com.expensetracker.app.core.theme.EmeraldGreen
 import com.expensetracker.app.core.theme.ExpenseRed
-import com.expensetracker.app.core.theme.MatteBlack
-import com.expensetracker.app.core.theme.MutedWhite
-import com.expensetracker.app.core.theme.SoftWhite
 import com.expensetracker.app.core.utils.CurrencyUtils
 import com.expensetracker.app.domain.model.RecurringExpense
 import com.expensetracker.app.domain.model.RecurringFrequency
@@ -84,18 +80,18 @@ fun RecurringScreen(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize().background(MatteBlack)
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = onNavigateBack) {
-                Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = SoftWhite)
+                Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onSurface)
             }
             Text(
                 text = "Recurring Payments",
-                color = SoftWhite,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.weight(1f)
@@ -135,24 +131,24 @@ fun RecurringScreen(
     if (insufficientPair != null) {
         AlertDialog(
             onDismissRequest = { insufficientPair = null },
-            containerColor = DarkCardElevated,
+            containerColor = MaterialTheme.colorScheme.surface,
             icon = {
                 Icon(Icons.Filled.Warning, contentDescription = null, tint = ExpenseRed, modifier = Modifier.size(32.dp))
             },
             title = {
-                Text("Insufficient Balance", color = SoftWhite, fontWeight = FontWeight.Bold)
+                Text("Insufficient Balance", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
             },
             text = {
                 val (amount, balance) = insufficientPair!!
                 Column {
                     Text(
                         "${CurrencyUtils.format(amount)} exceeds your available balance of ${CurrencyUtils.format(balance)}.",
-                        color = MutedWhite
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         "Balance cannot go negative. Add income first.",
-                        color = MutedWhite.copy(alpha = 0.7f),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                         fontSize = 13.sp
                     )
                 }
@@ -185,13 +181,13 @@ private fun RecurringCard(
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = expense.title,
-                    color = SoftWhite,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium
                 )
                 Text(
                     text = "${expense.frequency.displayName} \u2022 Due day ${expense.dueDay}",
-                    color = MutedWhite,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 12.sp
                 )
             }
@@ -204,7 +200,7 @@ private fun RecurringCard(
                 )
                 Text(
                     text = if (expense.isActive) "Active" else "Paused",
-                    color = if (expense.isActive) EmeraldGreen else MutedWhite,
+                    color = if (expense.isActive) EmeraldGreen else MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 11.sp
                 )
             }
@@ -215,7 +211,7 @@ private fun RecurringCard(
                 Icon(
                     imageVector = if (expense.isActive) Icons.Filled.PauseCircle else Icons.Filled.CheckCircle,
                     contentDescription = if (expense.isActive) "Pause" else "Activate",
-                    tint = if (expense.isActive) MutedWhite else EmeraldGreen,
+                    tint = if (expense.isActive) MaterialTheme.colorScheme.onSurfaceVariant else EmeraldGreen,
                     modifier = Modifier.size(20.dp)
                 )
             }
@@ -232,23 +228,23 @@ private fun AddRecurringDialog(viewModel: RecurringViewModel) {
 
     AlertDialog(
         onDismissRequest = { viewModel.hideAddDialog() },
-        containerColor = DarkCardElevated,
+        containerColor = MaterialTheme.colorScheme.surface,
         title = {
-            Text("Add Recurring", color = SoftWhite, fontWeight = FontWeight.Bold)
+            Text("Add Recurring", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
         },
         text = {
             Column {
                 OutlinedTextField(
                     value = state.editTitle,
                     onValueChange = { viewModel.setEditTitle(it) },
-                    label = { Text("Title", color = MutedWhite) },
+                    label = { Text("Title", color = MaterialTheme.colorScheme.onSurfaceVariant) },
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = EmeraldGreen,
-                        unfocusedBorderColor = CharcoalGray,
-                        focusedTextColor = SoftWhite,
-                        unfocusedTextColor = SoftWhite
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                     ),
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -256,14 +252,14 @@ private fun AddRecurringDialog(viewModel: RecurringViewModel) {
                 OutlinedTextField(
                     value = state.editAmount,
                     onValueChange = { viewModel.setEditAmount(it) },
-                    label = { Text("Amount", color = MutedWhite) },
+                    label = { Text("Amount", color = MaterialTheme.colorScheme.onSurfaceVariant) },
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = EmeraldGreen,
-                        unfocusedBorderColor = CharcoalGray,
-                        focusedTextColor = SoftWhite,
-                        unfocusedTextColor = SoftWhite
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                     ),
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -277,15 +273,15 @@ private fun AddRecurringDialog(viewModel: RecurringViewModel) {
                         value = state.editCategory,
                         onValueChange = {},
                         readOnly = true,
-                        label = { Text("Category", color = MutedWhite) },
+                        label = { Text("Category", color = MaterialTheme.colorScheme.onSurfaceVariant) },
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = categoryExpanded) },
                         modifier = Modifier.menuAnchor().fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = EmeraldGreen,
-                            unfocusedBorderColor = CharcoalGray,
-                            focusedTextColor = SoftWhite,
-                            unfocusedTextColor = SoftWhite
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                         )
                     )
                     ExposedDropdownMenu(
@@ -294,7 +290,7 @@ private fun AddRecurringDialog(viewModel: RecurringViewModel) {
                     ) {
                         viewModel.categories.forEach { cat ->
                             DropdownMenuItem(
-                                text = { Text(cat.displayName, color = SoftWhite) },
+                                text = { Text(cat.displayName, color = MaterialTheme.colorScheme.onSurface) },
                                 onClick = {
                                     viewModel.setEditCategory(cat.name)
                                     categoryExpanded = false
@@ -314,15 +310,15 @@ private fun AddRecurringDialog(viewModel: RecurringViewModel) {
                         value = state.editFrequency.displayName,
                         onValueChange = {},
                         readOnly = true,
-                        label = { Text("Frequency", color = MutedWhite) },
+                        label = { Text("Frequency", color = MaterialTheme.colorScheme.onSurfaceVariant) },
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = frequencyExpanded) },
                         modifier = Modifier.menuAnchor().fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = EmeraldGreen,
-                            unfocusedBorderColor = CharcoalGray,
-                            focusedTextColor = SoftWhite,
-                            unfocusedTextColor = SoftWhite
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                         )
                     )
                     ExposedDropdownMenu(
@@ -331,7 +327,7 @@ private fun AddRecurringDialog(viewModel: RecurringViewModel) {
                     ) {
                         viewModel.frequencies.forEach { freq ->
                             DropdownMenuItem(
-                                text = { Text(freq.displayName, color = SoftWhite) },
+                                text = { Text(freq.displayName, color = MaterialTheme.colorScheme.onSurface) },
                                 onClick = {
                                     viewModel.setEditFrequency(freq)
                                     frequencyExpanded = false
@@ -349,14 +345,14 @@ private fun AddRecurringDialog(viewModel: RecurringViewModel) {
                             viewModel.setEditDueDay(day)
                         }
                     },
-                    label = { Text("Due Day (1-31)", color = MutedWhite) },
+                    label = { Text("Due Day (1-31)", color = MaterialTheme.colorScheme.onSurfaceVariant) },
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = EmeraldGreen,
-                        unfocusedBorderColor = CharcoalGray,
-                        focusedTextColor = SoftWhite,
-                        unfocusedTextColor = SoftWhite
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                     ),
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -368,12 +364,12 @@ private fun AddRecurringDialog(viewModel: RecurringViewModel) {
                 colors = ButtonDefaults.buttonColors(containerColor = EmeraldGreen),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Text("Save", color = MatteBlack)
+                Text("Save", color = MaterialTheme.colorScheme.background)
             }
         },
         dismissButton = {
             TextButton(onClick = { viewModel.hideAddDialog() }) {
-                Text("Cancel", color = MutedWhite)
+                Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     )

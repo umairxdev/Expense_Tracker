@@ -51,13 +51,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.expensetracker.app.core.theme.CharcoalGray
-import com.expensetracker.app.core.theme.DarkCardElevated
+import androidx.compose.material3.MaterialTheme
 import com.expensetracker.app.core.theme.EmeraldGreen
 import com.expensetracker.app.core.theme.ExpenseRed
-import com.expensetracker.app.core.theme.MatteBlack
-import com.expensetracker.app.core.theme.MutedWhite
-import com.expensetracker.app.core.theme.SoftWhite
 import com.expensetracker.app.core.utils.CurrencyUtils
 import com.expensetracker.app.domain.model.Category
 import com.expensetracker.app.domain.model.TransactionType
@@ -93,7 +89,7 @@ fun AddTransactionScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MatteBlack)
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(scrollState)
     ) {
         Row(
@@ -106,12 +102,12 @@ fun AddTransactionScreen(
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
                     contentDescription = "Back",
-                    tint = SoftWhite
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             }
             Text(
                 text = if (state.transactionType == TransactionType.EXPENSE) "Add Expense" else "Add Income",
-                color = SoftWhite,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -137,7 +133,7 @@ fun AddTransactionScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(16.dp))
-                    .background(DarkCardElevated)
+                    .background(MaterialTheme.colorScheme.surface)
                     .padding(4.dp)
             ) {
                 val types = listOf(TransactionType.EXPENSE, TransactionType.INCOME)
@@ -157,13 +153,13 @@ fun AddTransactionScreen(
                                 imageVector = if (type == TransactionType.EXPENSE)
                                     Icons.Default.ArrowDownward else Icons.Default.ArrowUpward,
                                 contentDescription = null,
-                                tint = if (isSelected) MatteBlack else MutedWhite,
+                                tint = if (isSelected) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.size(16.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                     text = type.name.lowercase().replaceFirstChar { it.uppercase() },
-                    color = if (isSelected) MatteBlack else MutedWhite,
+                    color = if (isSelected) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 13.sp,
                                 fontWeight = FontWeight.SemiBold
                             )
@@ -176,7 +172,7 @@ fun AddTransactionScreen(
 
             Text(
                 text = "Amount",
-                color = MutedWhite,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 12.sp,
                 letterSpacing = 0.5.sp
             )
@@ -188,13 +184,13 @@ fun AddTransactionScreen(
                 placeholder = {
                     Text(
                         "0.00",
-                        color = MutedWhite.copy(alpha = 0.5f),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
                         fontSize = 28.sp,
                         fontWeight = FontWeight.Bold
                     )
                 },
                 textStyle = androidx.compose.ui.text.TextStyle(
-                    color = SoftWhite,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold
                 ),
@@ -203,7 +199,7 @@ fun AddTransactionScreen(
                 shape = RoundedCornerShape(16.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = EmeraldGreen,
-                    unfocusedBorderColor = CharcoalGray,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
                     cursorColor = EmeraldGreen
                 )
             )
@@ -212,7 +208,7 @@ fun AddTransactionScreen(
 
             Text(
                 text = "Category",
-                color = MutedWhite,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 12.sp,
                 letterSpacing = 0.5.sp
             )
@@ -229,7 +225,7 @@ fun AddTransactionScreen(
                 categories.forEach { category ->
                     val isSelected = state.selectedCategory == category.name
                     val bgColor by animateColorAsState(
-                        targetValue = if (isSelected) EmeraldGreen.copy(alpha = 0.15f) else DarkCardElevated,
+                        targetValue = if (isSelected) EmeraldGreen.copy(alpha = 0.15f) else MaterialTheme.colorScheme.surface,
                         animationSpec = tween(200),
                         label = "catBg"
                     )
@@ -255,7 +251,7 @@ fun AddTransactionScreen(
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                 text = category.displayName,
-                color = if (isSelected) EmeraldGreen else SoftWhite,
+                color = if (isSelected) EmeraldGreen else MaterialTheme.colorScheme.onSurface,
                 fontSize = 12.sp,
                 fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
                             )
@@ -268,7 +264,7 @@ fun AddTransactionScreen(
 
             Text(
                 text = "Note (optional)",
-                color = MutedWhite,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 12.sp,
                 letterSpacing = 0.5.sp
             )
@@ -280,13 +276,13 @@ fun AddTransactionScreen(
                     .fillMaxWidth()
                     .height(100.dp),
                 placeholder = {
-                    Text("Add a note...", color = MutedWhite.copy(alpha = 0.5f))
+                    Text("Add a note...", color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f))
                 },
-                textStyle = androidx.compose.ui.text.TextStyle(color = SoftWhite),
+                textStyle = androidx.compose.ui.text.TextStyle(color = MaterialTheme.colorScheme.onSurface),
                 shape = RoundedCornerShape(16.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = EmeraldGreen,
-                    unfocusedBorderColor = CharcoalGray,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
                     cursorColor = EmeraldGreen
                 )
             )
@@ -301,14 +297,14 @@ fun AddTransactionScreen(
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = EmeraldGreen,
-                    contentColor = MatteBlack
+                    contentColor = MaterialTheme.colorScheme.background
                 ),
                 enabled = !state.isSaving
             ) {
                 if (state.isSaving) {
                     androidx.compose.material3.CircularProgressIndicator(
                         modifier = Modifier.size(24.dp),
-                        color = MatteBlack,
+                        color = MaterialTheme.colorScheme.background,
                         strokeWidth = 2.dp
                     )
                 } else {
@@ -335,23 +331,23 @@ fun AddTransactionScreen(
     if (state.showLowBalanceWarning) {
         AlertDialog(
             onDismissRequest = { viewModel.dismissLowBalanceWarning() },
-            containerColor = DarkCardElevated,
+            containerColor = MaterialTheme.colorScheme.surface,
             icon = {
                 Icon(Icons.Filled.Warning, contentDescription = null, tint = ExpenseRed, modifier = Modifier.size(32.dp))
             },
             title = {
-                Text("Insufficient Balance", color = SoftWhite, fontWeight = FontWeight.Bold)
+                Text("Insufficient Balance", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
             },
             text = {
                 Column {
                     Text(
                         "This expense of ${CurrencyUtils.format(state.amount.toDoubleOrNull() ?: 0.0)} exceeds your available balance of ${CurrencyUtils.format(state.currentBalance)}.",
-                        color = MutedWhite
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         "Balance cannot go negative. Please reduce the amount or add income first.",
-                        color = MutedWhite.copy(alpha = 0.7f),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                         fontSize = 13.sp
                     )
                 }
