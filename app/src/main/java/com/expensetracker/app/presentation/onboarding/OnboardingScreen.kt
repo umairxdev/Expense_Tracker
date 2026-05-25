@@ -1,5 +1,6 @@
 package com.expensetracker.app.presentation.onboarding
 
+import android.content.Context
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -38,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
@@ -78,7 +80,16 @@ private val pages = listOf(
 fun OnboardingScreen(
     onNavigateToDashboard: () -> Unit
 ) {
+    val context = LocalContext.current
     var currentPage by remember { mutableIntStateOf(0) }
+
+    fun completeOnboarding() {
+        context.getSharedPreferences("app_settings", Context.MODE_PRIVATE)
+            .edit()
+            .putBoolean("onboarding_completed", true)
+            .apply()
+        onNavigateToDashboard()
+    }
 
     Column(
         modifier = Modifier
@@ -164,7 +175,7 @@ fun OnboardingScreen(
                 if (currentPage < pages.size - 1) {
                     currentPage++
                 } else {
-                    onNavigateToDashboard()
+                    completeOnboarding()
                 }
             },
             modifier = Modifier
@@ -185,7 +196,7 @@ fun OnboardingScreen(
 
         if (currentPage < pages.size - 1) {
             Spacer(modifier = Modifier.height(12.dp))
-            TextButton(onClick = onNavigateToDashboard) {
+            TextButton(onClick = { completeOnboarding() }) {
                 Text(
                     text = "Skip",
                     color = MutedWhite,
