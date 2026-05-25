@@ -6,9 +6,6 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -25,7 +22,43 @@ import com.expensetracker.app.core.theme.DarkCardElevated
 fun AnimatedCard(
     modifier: Modifier = Modifier,
     backgroundColor: Color = DarkCardElevated,
-    onClick: () -> Unit = {},
+    onClick: (() -> Unit)? = null,
+    content: @Composable () -> Unit
+) {
+    if (onClick != null) {
+        ClickableAnimatedCard(
+            modifier = modifier,
+            backgroundColor = backgroundColor,
+            onClick = onClick,
+            content = content
+        )
+    } else {
+        val elevation by animateDpAsState(
+            targetValue = 8.dp,
+            animationSpec = spring(
+                dampingRatio = Spring.DampingRatioMediumBouncy,
+                stiffness = Spring.StiffnessLow
+            ),
+            label = "elevation"
+        )
+        Card(
+            modifier = modifier,
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = backgroundColor),
+            elevation = CardDefaults.cardElevation(defaultElevation = elevation)
+        ) {
+            Box(modifier = Modifier.padding(12.dp)) {
+                content()
+            }
+        }
+    }
+}
+
+@Composable
+private fun ClickableAnimatedCard(
+    modifier: Modifier = Modifier,
+    backgroundColor: Color = DarkCardElevated,
+    onClick: () -> Unit,
     content: @Composable () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -48,7 +81,7 @@ fun AnimatedCard(
         elevation = CardDefaults.cardElevation(defaultElevation = elevation),
         interactionSource = interactionSource
     ) {
-        Box(modifier = Modifier.padding(16.dp)) {
+        Box(modifier = Modifier.padding(12.dp)) {
             content()
         }
     }

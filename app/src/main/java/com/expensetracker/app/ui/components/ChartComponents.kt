@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -64,13 +65,14 @@ fun PieChart(
         Color(0xFFFF6F00), Color(0xFF42A5F5), Color(0xFF78909C)
     )
 
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(modifier = Modifier.size(120.dp)) {
-            Canvas(modifier = Modifier.size(120.dp)) {
-                val strokeWidth = 32.dp.toPx()
+    Column(modifier = modifier.fillMaxWidth()) {
+        Box(
+            modifier = Modifier
+                .size(140.dp)
+                .align(Alignment.CenterHorizontally)
+        ) {
+            Canvas(modifier = Modifier.size(140.dp)) {
+                val strokeWidth = 36.dp.toPx()
                 var startAngle = -90f
 
                 data.forEachIndexed { index, summary ->
@@ -89,38 +91,36 @@ fun PieChart(
             }
         }
 
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        Column(modifier = Modifier.weight(1f)) {
-            data.take(6).forEachIndexed { index, summary ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 2.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(
-                            modifier = Modifier
-                                .size(8.dp)
-                                .clip(CircleShape)
-                                .padding(0.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = summary.category.take(10),
-                            color = MutedWhite,
-                            fontSize = 11.sp
-                        )
-                    }
+        data.take(6).forEachIndexed { index, summary ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 3.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(10.dp)
+                            .clip(CircleShape)
+                            .background(chartColors[index % chartColors.size])
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = CurrencyUtils.format(summary.amount),
-                        color = SoftWhite,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Medium
+                        text = summary.category,
+                        color = MutedWhite,
+                        fontSize = 13.sp
                     )
                 }
+                Text(
+                    text = CurrencyUtils.format(summary.amount),
+                    color = SoftWhite,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Medium
+                )
             }
         }
     }
@@ -260,11 +260,11 @@ fun LineChart(
             val x = padding + index * stepX
             drawContext.canvas.nativeCanvas.drawText(
                 trend.month,
-                x - 10f,
-                canvasHeight - 5f,
+                x,
+                canvasHeight - 8f,
                 android.graphics.Paint().apply {
                     color = android.graphics.Color.GRAY
-                    textSize = 24f
+                    textSize = 22f
                     textAlign = android.graphics.Paint.Align.CENTER
                 }
             )

@@ -123,10 +123,12 @@ fun HistoryScreen(
             if (state.filteredTransactions.isEmpty()) {
                 EmptyState(
                     title = "No transactions found",
-                    subtitle = "Try adjusting your search or filters"
+                    subtitle = "Try adjusting your search or filters",
+                    modifier = Modifier.weight(1f)
                 )
             } else {
                 LazyColumn(
+                    modifier = Modifier.weight(1f),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(

@@ -125,17 +125,19 @@ fun AnalyticsScreen(
             // Category Breakdown
             if (state.categorySummaries.isNotEmpty()) {
                 AnimatedCard(modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        text = "Category Breakdown",
-                        color = SoftWhite,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    PieChart(
-                        data = state.categorySummaries,
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                    Column {
+                        Text(
+                            text = "Category Breakdown",
+                            color = SoftWhite,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Spacer(modifier = Modifier.height(24.dp))
+                        PieChart(
+                            data = state.categorySummaries,
+                            modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(100.dp))

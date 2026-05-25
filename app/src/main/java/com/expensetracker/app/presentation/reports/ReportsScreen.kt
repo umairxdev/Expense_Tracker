@@ -135,7 +135,7 @@ fun ReportsScreen(
                                 fontWeight = FontWeight.SemiBold
                             )
                             Text(
-                                text = CurrencyUtils.format(-report.totalIncome),
+                                text = CurrencyUtils.format(report.totalIncome),
                                 color = EmeraldGreen,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.SemiBold
