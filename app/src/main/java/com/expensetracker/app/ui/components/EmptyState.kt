@@ -42,17 +42,17 @@ fun EmptyState(
             modifier = Modifier.size(64.dp)
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = title,
-            color = MutedWhite,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Medium
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = subtitle,
-            color = MutedWhite.copy(alpha = 0.6f),
-            fontSize = 14.sp
+            Text(
+                text = title,
+                color = MutedWhite,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = subtitle,
+                color = MutedWhite.copy(alpha = 0.6f),
+                fontSize = 13.sp
         )
     }
 }

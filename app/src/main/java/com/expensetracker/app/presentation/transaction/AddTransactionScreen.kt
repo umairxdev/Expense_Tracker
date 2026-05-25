@@ -112,7 +112,7 @@ fun AddTransactionScreen(
             Text(
                 text = if (state.transactionType == TransactionType.EXPENSE) "Add Expense" else "Add Income",
                 color = SoftWhite,
-                fontSize = 20.sp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.weight(1f))
@@ -162,9 +162,9 @@ fun AddTransactionScreen(
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = type.name.lowercase().replaceFirstChar { it.uppercase() },
-                                color = if (isSelected) MatteBlack else MutedWhite,
-                                fontSize = 14.sp,
+                    text = type.name.lowercase().replaceFirstChar { it.uppercase() },
+                    color = if (isSelected) MatteBlack else MutedWhite,
+                    fontSize = 13.sp,
                                 fontWeight = FontWeight.SemiBold
                             )
                         }
@@ -177,7 +177,7 @@ fun AddTransactionScreen(
             Text(
                 text = "Amount",
                 color = MutedWhite,
-                fontSize = 13.sp,
+                fontSize = 12.sp,
                 letterSpacing = 0.5.sp
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -189,13 +189,13 @@ fun AddTransactionScreen(
                     Text(
                         "0.00",
                         color = MutedWhite.copy(alpha = 0.5f),
-                        fontSize = 36.sp,
+                        fontSize = 28.sp,
                         fontWeight = FontWeight.Bold
                     )
                 },
                 textStyle = androidx.compose.ui.text.TextStyle(
                     color = SoftWhite,
-                    fontSize = 36.sp,
+                    fontSize = 28.sp,
                     fontWeight = FontWeight.Bold
                 ),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
@@ -213,7 +213,7 @@ fun AddTransactionScreen(
             Text(
                 text = "Category",
                 color = MutedWhite,
-                fontSize = 13.sp,
+                fontSize = 12.sp,
                 letterSpacing = 0.5.sp
             )
             Spacer(modifier = Modifier.height(12.dp))
@@ -254,10 +254,10 @@ fun AddTransactionScreen(
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = category.displayName,
-                                color = if (isSelected) EmeraldGreen else SoftWhite,
-                                fontSize = 13.sp,
-                                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
+                text = category.displayName,
+                color = if (isSelected) EmeraldGreen else SoftWhite,
+                fontSize = 12.sp,
+                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
                             )
                         }
                     }
@@ -269,7 +269,7 @@ fun AddTransactionScreen(
             Text(
                 text = "Note (optional)",
                 color = MutedWhite,
-                fontSize = 13.sp,
+                fontSize = 12.sp,
                 letterSpacing = 0.5.sp
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -313,9 +313,9 @@ fun AddTransactionScreen(
                     )
                 } else {
                     Text(
-                        text = "Save Transaction",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
+                text = "Save Transaction",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold
                     )
                 }
             }

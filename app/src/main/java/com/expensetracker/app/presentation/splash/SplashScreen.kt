@@ -65,7 +65,7 @@ fun SplashScreen(
             ) {
                 Text(
                     text = "$",
-                    fontSize = 48.sp,
+                    fontSize = 36.sp,
                     fontWeight = FontWeight.Bold,
                     color = EmeraldGreen
                 )
@@ -75,7 +75,7 @@ fun SplashScreen(
 
             Text(
                 text = "ExpenseTracker",
-                fontSize = 28.sp,
+                fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 color = SoftWhite,
                 modifier = Modifier.alpha(alpha.value)

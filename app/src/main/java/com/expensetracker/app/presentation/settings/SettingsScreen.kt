@@ -2,6 +2,7 @@ package com.expensetracker.app.presentation.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,12 +15,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Description
@@ -45,12 +48,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.expensetracker.app.core.theme.CharcoalGray
 import com.expensetracker.app.core.theme.DarkCardElevated
 import com.expensetracker.app.core.theme.EmeraldGreen
 import com.expensetracker.app.core.theme.ExpenseRed
 import com.expensetracker.app.core.theme.MatteBlack
 import com.expensetracker.app.core.theme.MutedWhite
 import com.expensetracker.app.core.theme.SoftWhite
+import com.expensetracker.app.core.utils.CurrencyUtils
 
 @Composable
 fun SettingsScreen(
@@ -82,7 +87,7 @@ fun SettingsScreen(
             Text(
                 text = "Settings",
                 color = SoftWhite,
-                fontSize = 20.sp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -110,7 +115,7 @@ fun SettingsScreen(
                     Text(
                         text = "$",
                         color = EmeraldGreen,
-                        fontSize = 28.sp,
+                        fontSize = 22.sp,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -119,13 +124,13 @@ fun SettingsScreen(
                     Text(
                         text = "ExpenseTracker",
                         color = SoftWhite,
-                        fontSize = 20.sp,
+                        fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
                         text = "v${state.appVersion}",
                         color = MutedWhite,
-                        fontSize = 13.sp
+                        fontSize = 12.sp
                     )
                 }
             }
@@ -151,9 +156,25 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
+                text = "CURRENCY",
+                color = MutedWhite.copy(alpha = 0.6f),
+                fontSize = 10.sp,
+                letterSpacing = 1.sp,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+
+            SettingsMenuItem(
+                icon = Icons.Filled.AttachMoney,
+                label = "Currency: ${state.selectedCurrency}",
+                onClick = { viewModel.showCurrencyPicker() }
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
                 text = "DATA MANAGEMENT",
                 color = MutedWhite.copy(alpha = 0.6f),
-                fontSize = 11.sp,
+                fontSize = 10.sp,
                 letterSpacing = 1.sp,
                 modifier = Modifier.padding(vertical = 8.dp)
             )
@@ -175,7 +196,7 @@ fun SettingsScreen(
             Text(
                 text = "PRIVACY",
                 color = MutedWhite.copy(alpha = 0.6f),
-                fontSize = 11.sp,
+                fontSize = 10.sp,
                 letterSpacing = 1.sp,
                 modifier = Modifier.padding(vertical = 8.dp)
             )
@@ -191,8 +212,8 @@ fun SettingsScreen(
             Text(
                 text = "All data is stored locally on your device.\nNo internet connection required.\n100% private and secure.",
                 color = MutedWhite.copy(alpha = 0.6f),
-                fontSize = 13.sp,
-                lineHeight = 20.sp
+                fontSize = 12.sp,
+                lineHeight = 18.sp
             )
         }
     }
@@ -252,39 +273,82 @@ fun SettingsScreen(
                         "Your data belongs to you.",
                         color = SoftWhite,
                         fontWeight = FontWeight.SemiBold,
-                        fontSize = 15.sp
+                        fontSize = 14.sp
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
                         "ExpenseTracker does not collect, store, or transmit any personal data. " +
                                 "All your financial information, transactions, budgets, and settings are stored " +
-                                "exclusively on your device in a local database.",
-                        color = MutedWhite,
-                        fontSize = 13.sp,
-                        lineHeight = 20.sp
+                                        "exclusively on your device in a local database.",
+                            color = MutedWhite,
+                            fontSize = 12.sp,
+                            lineHeight = 18.sp
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
-                        "No internet connection is required to use this app. " +
-                                "We do not use analytics services, crash reporting, or third-party SDKs " +
-                                "that access your data.",
-                        color = MutedWhite,
-                        fontSize = 13.sp,
-                        lineHeight = 20.sp
+                            "No internet connection is required to use this app. " +
+                                        "We do not use analytics services, crash reporting, or third-party SDKs " +
+                                        "that access your data.",
+                            color = MutedWhite,
+                            fontSize = 12.sp,
+                            lineHeight = 18.sp
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
-                        "If you choose to export or share data (backup or PDF), " +
-                                "that action is initiated by you and controlled entirely by your device's share system.",
-                        color = MutedWhite.copy(alpha = 0.7f),
-                        fontSize = 12.sp,
-                        lineHeight = 18.sp
+                            "If you choose to export or share data (backup or PDF), " +
+                                        "that action is initiated by you and controlled entirely by your device's share system.",
+                            color = MutedWhite.copy(alpha = 0.7f),
+                            fontSize = 11.sp,
+                            lineHeight = 16.sp
                     )
                 }
             },
             confirmButton = {
                 TextButton(onClick = { showPrivacy = false }) {
                     Text("OK", color = EmeraldGreen)
+                }
+            }
+        )
+    }
+
+    if (state.showCurrencyPicker) {
+        AlertDialog(
+            onDismissRequest = { viewModel.dismissCurrencyPicker() },
+            containerColor = DarkCardElevated,
+            title = {
+                Text("Select Currency", color = SoftWhite, fontWeight = FontWeight.Bold)
+            },
+            text = {
+                val currencies = CurrencyUtils.availableCurrencies
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    currencies.forEach { pair ->
+                        val code = pair.first
+                        val label = pair.second
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(8.dp))
+                                .then(
+                                    if (state.selectedCurrency == code) Modifier.background(EmeraldGreen.copy(alpha = 0.1f))
+                                    else Modifier
+                                )
+                                .clickable { viewModel.setCurrency(code) }
+                                .padding(12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = label,
+                                color = if (state.selectedCurrency == code) EmeraldGreen else SoftWhite,
+                                fontSize = 13.sp,
+                                fontWeight = if (state.selectedCurrency == code) FontWeight.SemiBold else FontWeight.Normal
+                            )
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { viewModel.dismissCurrencyPicker() }) {
+                    Text("Cancel", color = MutedWhite)
                 }
             }
         )
@@ -318,7 +382,7 @@ private fun SettingsMenuItem(
         Text(
             text = label,
             color = if (enabled) SoftWhite else MutedWhite.copy(alpha = 0.5f),
-            fontSize = 15.sp,
+            fontSize = 14.sp,
             fontWeight = FontWeight.Medium,
             modifier = Modifier.weight(1f)
         )

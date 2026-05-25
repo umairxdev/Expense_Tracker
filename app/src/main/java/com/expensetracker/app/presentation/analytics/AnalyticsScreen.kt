@@ -60,7 +60,7 @@ fun AnalyticsScreen(
             Text(
                 text = "Analytics",
                 color = SoftWhite,
-                fontSize = 20.sp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -109,7 +109,7 @@ fun AnalyticsScreen(
                     Text(
                         text = "Spending Trends",
                         color = SoftWhite,
-                        fontSize = 16.sp,
+                        fontSize = 15.sp,
                         fontWeight = FontWeight.SemiBold
                     )
                     Spacer(modifier = Modifier.height(12.dp))
@@ -129,7 +129,7 @@ fun AnalyticsScreen(
                         Text(
                             text = "Category Breakdown",
                             color = SoftWhite,
-                            fontSize = 16.sp,
+                            fontSize = 15.sp,
                             fontWeight = FontWeight.SemiBold
                         )
                         Spacer(modifier = Modifier.height(24.dp))

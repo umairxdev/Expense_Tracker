@@ -89,7 +89,7 @@ fun ReportGeneratorScreen(
             Text(
                 text = "Generate Report",
                 color = SoftWhite,
-                fontSize = 20.sp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -105,7 +105,7 @@ fun ReportGeneratorScreen(
             Text(
                 text = "Select Date Range",
                 color = MutedWhite,
-                fontSize = 13.sp,
+                fontSize = 12.sp,
                 letterSpacing = 0.5.sp
             )
 
@@ -152,7 +152,7 @@ fun ReportGeneratorScreen(
                     Spacer(modifier = Modifier.size(8.dp))
                     Text(
                         text = "Generate PDF Report",
-                        fontSize = 16.sp,
+                        fontSize = 14.sp,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -161,8 +161,8 @@ fun ReportGeneratorScreen(
             Text(
                 text = "The report includes income & expense summary, daily trend chart, and all transactions within the selected date range.",
                 color = MutedWhite.copy(alpha = 0.6f),
-                fontSize = 13.sp,
-                lineHeight = 20.sp
+                fontSize = 12.sp,
+                lineHeight = 18.sp
             )
         }
     }
@@ -291,7 +291,7 @@ private fun DateSelector(
             Text(
                 text = dateFormat.format(Date(date)),
                 color = SoftWhite,
-                fontSize = 15.sp,
+                fontSize = 14.sp,
                 fontWeight = FontWeight.Medium
             )
         }

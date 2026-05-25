@@ -64,7 +64,7 @@ fun ReportsScreen(
             Text(
                 text = "Reports",
                 color = SoftWhite,
-                fontSize = 20.sp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -89,7 +89,7 @@ fun ReportsScreen(
                     Text(
                         text = "Income vs Expenses",
                         color = SoftWhite,
-                        fontSize = 16.sp,
+                        fontSize = 15.sp,
                         fontWeight = FontWeight.SemiBold
                     )
                     Spacer(modifier = Modifier.height(2.dp))
@@ -140,7 +140,7 @@ fun ReportsScreen(
             Text(
                 text = "Monthly Summary",
                 color = SoftWhite,
-                fontSize = 18.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 12.dp)
             )
@@ -162,7 +162,7 @@ fun ReportsScreen(
                             Text(
                                 text = "${report.month} ${report.year}",
                                 color = SoftWhite,
-                                fontSize = 15.sp,
+                                fontSize = 14.sp,
                                 fontWeight = FontWeight.SemiBold
                             )
                             Text(

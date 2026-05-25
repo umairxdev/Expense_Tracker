@@ -121,7 +121,7 @@ fun OnboardingScreen(
                 Text(
                     text = pages[page].title,
                     color = SoftWhite,
-                    fontSize = 28.sp,
+                    fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
                 )
@@ -131,9 +131,9 @@ fun OnboardingScreen(
                 Text(
                     text = pages[page].description,
                     color = MutedWhite,
-                    fontSize = 16.sp,
+                    fontSize = 15.sp,
                     textAlign = TextAlign.Center,
-                    lineHeight = 24.sp
+                    lineHeight = 22.sp
                 )
             }
         }
@@ -178,7 +178,7 @@ fun OnboardingScreen(
         ) {
             Text(
                 text = if (currentPage < pages.size - 1) "Continue" else "Get Started",
-                fontSize = 16.sp,
+                fontSize = 15.sp,
                 fontWeight = FontWeight.SemiBold
             )
         }

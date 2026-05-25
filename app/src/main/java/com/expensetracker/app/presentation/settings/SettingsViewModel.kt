@@ -1,7 +1,10 @@
 package com.expensetracker.app.presentation.settings
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import android.content.Context
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.expensetracker.app.core.utils.CurrencyUtils
 import com.expensetracker.app.data.local.dao.BudgetDao
 import com.expensetracker.app.data.local.dao.CategoryDao
 import com.expensetracker.app.data.local.dao.RecurringExpenseDao
@@ -18,18 +21,25 @@ data class SettingsUiState(
     val showResetConfirm: Boolean = false,
     val isResetting: Boolean = false,
     val showResetResult: Boolean = false,
-    val resetMessage: String = ""
+    val resetMessage: String = "",
+    val selectedCurrency: String = "PKR",
+    val showCurrencyPicker: Boolean = false
 )
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
+    application: Application,
     private val transactionDao: TransactionDao,
     private val recurringExpenseDao: RecurringExpenseDao,
     private val budgetDao: BudgetDao,
     private val categoryDao: CategoryDao
-) : ViewModel() {
+) : AndroidViewModel(application) {
 
-    private val _uiState = MutableStateFlow(SettingsUiState())
+    private val prefs = application.getSharedPreferences("app_settings", Context.MODE_PRIVATE)
+
+    private val _uiState = MutableStateFlow(
+        SettingsUiState(selectedCurrency = CurrencyUtils.currencyCode)
+    )
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
 
     fun showResetConfirm() {
@@ -65,5 +75,19 @@ class SettingsViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    fun showCurrencyPicker() {
+        _uiState.value = _uiState.value.copy(showCurrencyPicker = true)
+    }
+
+    fun dismissCurrencyPicker() {
+        _uiState.value = _uiState.value.copy(showCurrencyPicker = false)
+    }
+
+    fun setCurrency(code: String) {
+        prefs.edit().putString("currency_code", code).apply()
+        CurrencyUtils.currencyCode = code
+        _uiState.value = _uiState.value.copy(selectedCurrency = code, showCurrencyPicker = false)
     }
 }

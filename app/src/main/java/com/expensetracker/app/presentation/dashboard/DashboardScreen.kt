@@ -115,7 +115,7 @@ fun DashboardScreen(
             Text(
                 text = "Overview",
                 color = SoftWhite,
-                fontSize = 28.sp,
+                fontSize = 22.sp,
                 fontWeight = FontWeight.Bold
             )
             Text(
@@ -124,7 +124,7 @@ fun DashboardScreen(
                     java.time.LocalDate.now().monthValue
                 ),
                 color = MutedWhite,
-                fontSize = 14.sp
+                fontSize = 13.sp
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -133,8 +133,6 @@ fun DashboardScreen(
             if (uiState.data != null) {
                 BalanceCard(
                     balance = uiState.data!!.balance,
-                    income = uiState.data!!.monthlyIncome,
-                    expense = uiState.data!!.monthlyExpense,
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -168,7 +166,7 @@ fun DashboardScreen(
                             Text(
                                 text = "Spending by Category",
                                 color = SoftWhite,
-                                fontSize = 16.sp,
+                                fontSize = 15.sp,
                                 fontWeight = FontWeight.SemiBold
                             )
                             Spacer(modifier = Modifier.height(12.dp))
@@ -219,13 +217,13 @@ fun DashboardScreen(
                             Text(
                                 text = "Recent Transactions",
                                 color = SoftWhite,
-                                fontSize = 16.sp,
+                                fontSize = 15.sp,
                                 fontWeight = FontWeight.SemiBold
                             )
                             Text(
                                 text = "See All",
                                 color = EmeraldGreen,
-                                fontSize = 13.sp,
+                                fontSize = 12.sp,
                                 fontWeight = FontWeight.Medium,
                                 modifier = Modifier.clickable { onNavigateToHistory() }
                             )
@@ -288,8 +286,6 @@ fun DashboardScreen(
 @Composable
 private fun BalanceCard(
     balance: Double,
-    income: Double,
-    expense: Double,
     modifier: Modifier = Modifier
 ) {
     val animatedBalance by animateFloatAsState(
@@ -300,7 +296,7 @@ private fun BalanceCard(
 
     Box(
         modifier = modifier
-            .height(180.dp)
+            .height(140.dp)
             .clip(RoundedCornerShape(20.dp))
             .background(
                 brush = Brush.linearGradient(
@@ -325,48 +321,16 @@ private fun BalanceCard(
             Text(
                 text = "Current Balance",
                 color = MutedWhite,
-                fontSize = 13.sp,
+                fontSize = 12.sp,
                 letterSpacing = 0.5.sp
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = CurrencyUtils.format(animatedBalance.toDouble()),
                 color = SoftWhite,
-                fontSize = 36.sp,
+                fontSize = 28.sp,
                 fontWeight = FontWeight.Bold
             )
-            Spacer(modifier = Modifier.weight(1f))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column {
-                    Text(
-                        text = "Income",
-                        color = MutedWhite,
-                        fontSize = 11.sp
-                    )
-                    Text(
-                        text = CurrencyUtils.format(income),
-                        color = EmeraldGreen,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
-                Column(horizontalAlignment = Alignment.End) {
-                    Text(
-                        text = "Expenses",
-                        color = MutedWhite,
-                        fontSize = 11.sp
-                    )
-                    Text(
-                        text = CurrencyUtils.format(expense),
-                        color = ExpenseRed,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
-            }
         }
     }
 }
@@ -383,14 +347,14 @@ private fun QuickStatCard(
             Text(
                 text = label,
                 color = MutedWhite,
-                fontSize = 12.sp,
+                fontSize = 11.sp,
                 letterSpacing = 0.5.sp
             )
             Spacer(modifier = Modifier.height(6.dp))
             Text(
                 text = CurrencyUtils.format(amount),
                 color = color,
-                fontSize = 20.sp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -419,7 +383,7 @@ private fun QuickActionButton(
             Text(
                 text = label,
                 color = SoftWhite,
-                fontSize = 12.sp,
+                fontSize = 11.sp,
                 fontWeight = FontWeight.Medium
             )
         }

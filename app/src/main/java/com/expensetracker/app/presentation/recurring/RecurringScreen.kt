@@ -68,7 +68,7 @@ fun RecurringScreen(
             Text(
                 text = "Recurring Payments",
                 color = SoftWhite,
-                fontSize = 20.sp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.weight(1f)
             )
@@ -102,7 +102,7 @@ fun RecurringScreen(
                                 Text(
                                     text = expense.title,
                                     color = SoftWhite,
-                                    fontSize = 15.sp,
+                                    fontSize = 14.sp,
                                     fontWeight = FontWeight.Medium
                                 )
                                 Text(
@@ -115,7 +115,7 @@ fun RecurringScreen(
                                 Text(
                                     text = CurrencyUtils.format(expense.amount),
                                     color = ExpenseRed,
-                                    fontSize = 15.sp,
+                                    fontSize = 14.sp,
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(

@@ -3,7 +3,9 @@ package com.expensetracker.app
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Context
 import android.os.Build
+import com.expensetracker.app.core.utils.CurrencyUtils
 import com.expensetracker.app.core.utils.NotificationUtils
 import dagger.hilt.android.HiltAndroidApp
 
@@ -13,6 +15,12 @@ class ExpenseTrackerApp : Application() {
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
+        loadCurrencyPreference()
+    }
+
+    private fun loadCurrencyPreference() {
+        val prefs = getSharedPreferences("app_settings", Context.MODE_PRIVATE)
+        CurrencyUtils.currencyCode = prefs.getString("currency_code", "PKR") ?: "PKR"
     }
 
     private fun createNotificationChannel() {

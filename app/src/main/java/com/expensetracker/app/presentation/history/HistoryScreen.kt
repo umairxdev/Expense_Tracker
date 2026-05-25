@@ -74,7 +74,7 @@ fun HistoryScreen(
             Text(
                 text = "History",
                 color = SoftWhite,
-                fontSize = 20.sp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -115,7 +115,7 @@ fun HistoryScreen(
                     Text(
                         text = chip,
                         color = if (isSelected) MatteBlack else MutedWhite,
-                        fontSize = 12.sp,
+                        fontSize = 11.sp,
                         fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
                         modifier = Modifier
                             .clip(RoundedCornerShape(8.dp))

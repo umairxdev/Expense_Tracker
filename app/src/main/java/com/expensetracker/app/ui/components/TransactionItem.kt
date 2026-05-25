@@ -99,14 +99,14 @@ fun TransactionItem(
             Text(
                 text = categoryName,
                 color = SoftWhite,
-                fontSize = 15.sp,
+                fontSize = 14.sp,
                 fontWeight = FontWeight.Medium
             )
             if (transaction.note.isNotEmpty()) {
                 Text(
                     text = transaction.note,
                     color = MutedWhite,
-                    fontSize = 12.sp,
+                    fontSize = 11.sp,
                     maxLines = 1
                 )
             }
@@ -114,14 +114,14 @@ fun TransactionItem(
             Text(
                 text = DateUtils.formatDisplay(date),
                 color = MutedWhite,
-                fontSize = 11.sp
+                fontSize = 10.sp
             )
         }
 
         Text(
             text = "${if (isExpense) "-" else "+"}${CurrencyUtils.format(transaction.amount)}",
             color = amountColor,
-            fontSize = 16.sp,
+            fontSize = 15.sp,
             fontWeight = FontWeight.Bold
         )
 

@@ -112,13 +112,13 @@ fun PieChart(
                     Text(
                         text = summary.category,
                         color = MutedWhite,
-                        fontSize = 13.sp
+                        fontSize = 12.sp
                     )
                 }
                 Text(
                     text = CurrencyUtils.format(summary.amount),
                     color = SoftWhite,
-                    fontSize = 13.sp,
+                    fontSize = 12.sp,
                     fontWeight = FontWeight.Medium
                 )
             }
@@ -162,8 +162,8 @@ fun BarChart(
                 Text(
                     text = trend.month.take(3),
                     color = DimWhite,
-                    fontSize = 10.sp,
-                    modifier = Modifier.width(28.dp)
+                    fontSize = 9.sp,
+                    modifier = Modifier.width(24.dp)
                 )
 
                 Column(modifier = Modifier.weight(1f)) {

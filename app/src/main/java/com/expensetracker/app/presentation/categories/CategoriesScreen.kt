@@ -74,7 +74,7 @@ fun CategoriesScreen(
                 Text(
                     text = "Categories",
                     color = SoftWhite,
-                    fontSize = 20.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -239,7 +239,7 @@ private fun CategoryRow(item: CategoryItem, onDelete: () -> Unit) {
             Text(
                 text = item.displayName,
                 color = SoftWhite,
-                fontSize = 15.sp,
+                fontSize = 14.sp,
                 fontWeight = FontWeight.Medium
             )
             Text(

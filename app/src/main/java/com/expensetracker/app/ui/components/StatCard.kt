@@ -43,7 +43,7 @@ fun StatCard(
             Text(
                 text = label,
                 color = MutedWhite,
-                fontSize = 11.sp,
+                fontSize = 10.sp,
                 fontWeight = FontWeight.Medium,
                 letterSpacing = 0.5.sp
             )
@@ -57,7 +57,7 @@ fun StatCard(
                 Text(
                     text = CurrencyUtils.format(amount),
                     color = color,
-                    fontSize = 18.sp,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
             }
