@@ -1,0 +1,2 @@
+-keepattributes *Annotation*
+-keep class com.expensetracker.app.data.local.entity.** { *; }
