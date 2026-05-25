@@ -28,6 +28,8 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -35,6 +37,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -51,9 +54,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.expensetracker.app.core.theme.CharcoalGray
 import com.expensetracker.app.core.theme.DarkCardElevated
 import com.expensetracker.app.core.theme.EmeraldGreen
+import com.expensetracker.app.core.theme.ExpenseRed
 import com.expensetracker.app.core.theme.MatteBlack
 import com.expensetracker.app.core.theme.MutedWhite
 import com.expensetracker.app.core.theme.SoftWhite
+import com.expensetracker.app.core.utils.CurrencyUtils
 import com.expensetracker.app.domain.model.Category
 import com.expensetracker.app.domain.model.TransactionType
 import com.expensetracker.app.ui.components.CategoryIcon
@@ -66,6 +71,8 @@ fun AddTransactionScreen(
     viewModel: AddTransactionViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
+    val expenseCategories by viewModel.expenseCategories.collectAsState()
+    val incomeCategories by viewModel.incomeCategories.collectAsState()
     val scrollState = rememberScrollState()
 
     LaunchedEffect(initialType) {
@@ -89,7 +96,6 @@ fun AddTransactionScreen(
             .background(MatteBlack)
             .verticalScroll(scrollState)
     ) {
-        // Toolbar
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -127,7 +133,6 @@ fun AddTransactionScreen(
                 .fillMaxSize()
                 .padding(20.dp)
         ) {
-            // Transaction Type Toggle
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -169,7 +174,6 @@ fun AddTransactionScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Amount Input
             Text(
                 text = "Amount",
                 color = MutedWhite,
@@ -206,7 +210,6 @@ fun AddTransactionScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Category selection
             Text(
                 text = "Category",
                 color = MutedWhite,
@@ -216,7 +219,7 @@ fun AddTransactionScreen(
             Spacer(modifier = Modifier.height(12.dp))
 
             val categories = if (state.transactionType == TransactionType.EXPENSE)
-                viewModel.expenseCategories else viewModel.incomeCategories
+                expenseCategories else incomeCategories
 
             FlowRow(
                 modifier = Modifier.fillMaxWidth(),
@@ -263,7 +266,6 @@ fun AddTransactionScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Note
             Text(
                 text = "Note (optional)",
                 color = MutedWhite,
@@ -328,5 +330,42 @@ fun AddTransactionScreen(
                 )
             }
         }
+    }
+
+    if (state.showLowBalanceWarning) {
+        AlertDialog(
+            onDismissRequest = { viewModel.dismissLowBalanceWarning() },
+            containerColor = DarkCardElevated,
+            icon = {
+                Icon(Icons.Filled.Warning, contentDescription = null, tint = ExpenseRed, modifier = Modifier.size(32.dp))
+            },
+            title = {
+                Text("Low Balance Warning", color = SoftWhite, fontWeight = FontWeight.Bold)
+            },
+            text = {
+                Column {
+                    Text(
+                        "This expense of ${CurrencyUtils.format(state.amount.toDoubleOrNull() ?: 0.0)} exceeds your available balance of ${CurrencyUtils.format(state.currentBalance)}.",
+                        color = MutedWhite
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        "Your balance may go negative. Save anyway?",
+                        color = MutedWhite.copy(alpha = 0.7f),
+                        fontSize = 13.sp
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { viewModel.saveAfterWarning() }) {
+                    Text("Save Anyway", color = ExpenseRed)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.dismissLowBalanceWarning() }) {
+                    Text("Cancel", color = MutedWhite)
+                }
+            }
+        )
     }
 }

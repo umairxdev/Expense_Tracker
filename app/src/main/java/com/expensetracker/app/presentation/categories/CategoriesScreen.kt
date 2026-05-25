@@ -1,7 +1,9 @@
 package com.expensetracker.app.presentation.categories
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,10 +17,19 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -28,7 +39,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.expensetracker.app.core.theme.CharcoalGray
 import com.expensetracker.app.core.theme.DarkCard
+import com.expensetracker.app.core.theme.DarkCardElevated
 import com.expensetracker.app.core.theme.EmeraldGreen
 import com.expensetracker.app.core.theme.ExpenseRed
 import com.expensetracker.app.core.theme.MatteBlack
@@ -41,66 +54,178 @@ fun CategoriesScreen(
     onNavigateBack: () -> Unit,
     viewModel: CategoriesViewModel = hiltViewModel()
 ) {
-    val state = viewModel.categories
+    val state by viewModel.uiState.collectAsState()
 
-    Column(
-        modifier = Modifier.fillMaxSize().background(MatteBlack)
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MatteBlack)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = onNavigateBack) {
-                Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = SoftWhite)
-            }
-            Text(
-                text = "Categories",
-                color = SoftWhite,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
-
-        LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            item {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = onNavigateBack) {
+                    Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = SoftWhite)
+                }
                 Text(
-                    text = "Expense Categories",
-                    color = MutedWhite,
-                    fontSize = 13.sp,
-                    letterSpacing = 0.5.sp,
-                    modifier = Modifier.padding(vertical = 8.dp)
+                    text = "Categories",
+                    color = SoftWhite,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
                 )
             }
 
-            items(state.filter { it.isExpense }) { item ->
-                CategoryRow(item = item)
-            }
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                item {
+                    Text(
+                        text = "Expense Categories",
+                        color = MutedWhite,
+                        fontSize = 13.sp,
+                        letterSpacing = 0.5.sp,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                }
 
-            item {
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = "Income Categories",
-                    color = MutedWhite,
-                    fontSize = 13.sp,
-                    letterSpacing = 0.5.sp,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
-            }
+                items(state.categories.filter { it.isExpense }) { item ->
+                    CategoryRow(item = item, onDelete = {
+                        if (!item.isDefault) viewModel.requestDelete(item)
+                    })
+                }
 
-            items(state.filter { !it.isExpense }) { item ->
-                CategoryRow(item = item)
-            }
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = "Income Categories",
+                        color = MutedWhite,
+                        fontSize = 13.sp,
+                        letterSpacing = 0.5.sp,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                }
 
-            item { Spacer(modifier = Modifier.height(32.dp)) }
+                items(state.categories.filter { !it.isExpense }) { item ->
+                    CategoryRow(item = item, onDelete = {
+                        if (!item.isDefault) viewModel.requestDelete(item)
+                    })
+                }
+
+                item { Spacer(modifier = Modifier.height(80.dp)) }
+            }
         }
+
+        FloatingActionButton(
+            onClick = { viewModel.showAddDialog() },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp),
+            containerColor = EmeraldGreen,
+            contentColor = MatteBlack
+        ) {
+            Icon(Icons.Filled.Add, contentDescription = "Add Category")
+        }
+    }
+
+    if (state.showAddDialog) {
+        AlertDialog(
+            onDismissRequest = { viewModel.hideAddDialog() },
+            containerColor = DarkCardElevated,
+            title = { Text("Add Category", color = SoftWhite, fontWeight = FontWeight.Bold) },
+            text = {
+                Column {
+                    OutlinedTextField(
+                        value = state.addName,
+                        onValueChange = { viewModel.setAddName(it) },
+                        label = { Text("Category Name", color = MutedWhite) },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = SoftWhite,
+                            unfocusedTextColor = SoftWhite,
+                            focusedBorderColor = EmeraldGreen,
+                            unfocusedBorderColor = CharcoalGray
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = state.addDisplayName,
+                        onValueChange = { viewModel.setAddDisplayName(it) },
+                        label = { Text("Display Name (optional)", color = MutedWhite) },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = SoftWhite,
+                            unfocusedTextColor = SoftWhite,
+                            focusedBorderColor = EmeraldGreen,
+                            unfocusedBorderColor = CharcoalGray
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        RadioButton(
+                            selected = state.addType == "EXPENSE",
+                            onClick = { viewModel.setAddType("EXPENSE") },
+                            colors = RadioButtonDefaults.colors(selectedColor = ExpenseRed)
+                        )
+                        Text("Expense", color = ExpenseRed, fontSize = 14.sp)
+                        Spacer(modifier = Modifier.width(16.dp))
+                        RadioButton(
+                            selected = state.addType == "INCOME",
+                            onClick = { viewModel.setAddType("INCOME") },
+                            colors = RadioButtonDefaults.colors(selectedColor = EmeraldGreen)
+                        )
+                        Text("Income", color = EmeraldGreen, fontSize = 14.sp)
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { viewModel.addCategory() }) {
+                    Text("Add", color = EmeraldGreen)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.hideAddDialog() }) {
+                    Text("Cancel", color = MutedWhite)
+                }
+            }
+        )
+    }
+
+    if (state.deleteConfirm != null) {
+        AlertDialog(
+            onDismissRequest = { viewModel.cancelDelete() },
+            containerColor = DarkCardElevated,
+            title = { Text("Delete Category", color = SoftWhite, fontWeight = FontWeight.Bold) },
+            text = {
+                Text(
+                    "Delete \"${state.deleteConfirm!!.displayName}\"? Existing transactions won't be affected.",
+                    color = MutedWhite
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { viewModel.confirmDelete() }) {
+                    Text("Delete", color = ExpenseRed)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.cancelDelete() }) {
+                    Text("Cancel", color = MutedWhite)
+                }
+            }
+        )
     }
 }
 
 @Composable
-private fun CategoryRow(item: CategoryItem) {
+private fun CategoryRow(item: CategoryItem, onDelete: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -122,6 +247,11 @@ private fun CategoryRow(item: CategoryItem) {
                 color = if (item.isExpense) ExpenseRed else EmeraldGreen,
                 fontSize = 12.sp
             )
+        }
+        if (!item.isDefault) {
+            IconButton(onClick = onDelete) {
+                Icon(Icons.Filled.Delete, contentDescription = "Delete", tint = ExpenseRed.copy(alpha = 0.7f))
+            }
         }
     }
 }

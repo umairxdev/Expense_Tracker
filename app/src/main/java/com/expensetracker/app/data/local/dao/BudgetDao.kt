@@ -32,4 +32,10 @@ interface BudgetDao {
 
     @Query("UPDATE budgets SET spent = :spent WHERE id = :id")
     suspend fun updateSpent(id: Long, spent: Double)
+
+    @Query("SELECT * FROM budgets ORDER BY category ASC")
+    suspend fun getAllOnce(): List<BudgetEntity>
+
+    @Query("DELETE FROM budgets")
+    suspend fun deleteAll()
 }

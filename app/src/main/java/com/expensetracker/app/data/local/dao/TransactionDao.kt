@@ -59,6 +59,18 @@ interface TransactionDao {
 
     @Query("DELETE FROM transactions WHERE id = :id")
     suspend fun deleteById(id: Long)
+
+    @Query("SELECT * FROM transactions ORDER BY date DESC")
+    suspend fun getAllTransactionsOnce(): List<TransactionEntity>
+
+    @Query("SELECT * FROM transactions WHERE date BETWEEN :startDate AND :endDate ORDER BY date DESC")
+    suspend fun getTransactionsByDateRangeOnce(startDate: Long, endDate: Long): List<TransactionEntity>
+
+    @Query("DELETE FROM transactions")
+    suspend fun deleteAll()
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(transactions: List<TransactionEntity>)
 }
 
 data class CategoryAmount(

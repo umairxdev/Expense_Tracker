@@ -16,6 +16,7 @@ import com.expensetracker.app.presentation.dashboard.DashboardScreen
 import com.expensetracker.app.presentation.history.HistoryScreen
 import com.expensetracker.app.presentation.onboarding.OnboardingScreen
 import com.expensetracker.app.presentation.recurring.RecurringScreen
+import com.expensetracker.app.presentation.reports.ReportGeneratorScreen
 import com.expensetracker.app.presentation.reports.ReportsScreen
 import com.expensetracker.app.presentation.settings.SettingsScreen
 import com.expensetracker.app.presentation.splash.SplashScreen
@@ -147,7 +148,15 @@ fun NavGraph(
                 },
                 onNavigateToReports = {
                     navController.navigate(Screen.Reports.route)
+                },
+                onNavigateToReportGenerator = {
+                    navController.navigate(Screen.ReportGenerator.route)
                 }
+            )
+        }
+        composable(Screen.ReportGenerator.route) {
+            ReportGeneratorScreen(
+                onNavigateBack = { navController.popBackStack() }
             )
         }
     }

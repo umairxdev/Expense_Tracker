@@ -35,4 +35,10 @@ interface RecurringExpenseDao {
 
     @Query("UPDATE recurring_expenses SET isActive = :isActive WHERE id = :id")
     suspend fun toggleActive(id: Long, isActive: Boolean)
+
+    @Query("SELECT * FROM recurring_expenses ORDER BY dueDay ASC")
+    suspend fun getAllOnce(): List<RecurringExpenseEntity>
+
+    @Query("DELETE FROM recurring_expenses")
+    suspend fun deleteAll()
 }

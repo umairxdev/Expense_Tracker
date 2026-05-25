@@ -13,4 +13,5 @@ sealed class Screen(val route: String) {
     data object Categories : Screen("categories")
     data object Recurring : Screen("recurring")
     data object Settings : Screen("settings")
+    data object ReportGenerator : Screen("report_generator")
 }

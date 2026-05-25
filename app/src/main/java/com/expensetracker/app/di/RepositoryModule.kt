@@ -1,9 +1,11 @@
 package com.expensetracker.app.di
 
 import com.expensetracker.app.data.repository.BudgetRepositoryImpl
+import com.expensetracker.app.data.repository.CategoryRepositoryImpl
 import com.expensetracker.app.data.repository.RecurringExpenseRepositoryImpl
 import com.expensetracker.app.data.repository.TransactionRepositoryImpl
 import com.expensetracker.app.domain.repository.BudgetRepository
+import com.expensetracker.app.domain.repository.CategoryRepository
 import com.expensetracker.app.domain.repository.RecurringExpenseRepository
 import com.expensetracker.app.domain.repository.TransactionRepository
 import dagger.Binds
@@ -33,4 +35,10 @@ abstract class RepositoryModule {
     abstract fun bindBudgetRepository(
         impl: BudgetRepositoryImpl
     ): BudgetRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindCategoryRepository(
+        impl: CategoryRepositoryImpl
+    ): CategoryRepository
 }

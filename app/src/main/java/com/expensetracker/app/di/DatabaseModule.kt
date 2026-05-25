@@ -3,6 +3,7 @@ package com.expensetracker.app.di
 import android.content.Context
 import com.expensetracker.app.data.local.AppDatabase
 import com.expensetracker.app.data.local.dao.BudgetDao
+import com.expensetracker.app.data.local.dao.CategoryDao
 import com.expensetracker.app.data.local.dao.RecurringExpenseDao
 import com.expensetracker.app.data.local.dao.TransactionDao
 import dagger.Module
@@ -35,5 +36,10 @@ object DatabaseModule {
     @Provides
     fun provideBudgetDao(database: AppDatabase): BudgetDao {
         return database.budgetDao()
+    }
+
+    @Provides
+    fun provideCategoryDao(database: AppDatabase): CategoryDao {
+        return database.categoryDao()
     }
 }
