@@ -3,11 +3,13 @@ package com.expensetracker.app.presentation.dashboard
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.expensetracker.app.domain.model.DashboardData
+import com.expensetracker.app.domain.repository.TransactionRepository
 import com.expensetracker.app.domain.usecase.GetDashboardDataUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,24 +20,23 @@ data class DashboardUiState(
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
-    private val getDashboardDataUseCase: GetDashboardDataUseCase
+    private val getDashboardDataUseCase: GetDashboardDataUseCase,
+    private val transactionRepository: TransactionRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DashboardUiState())
     val uiState: StateFlow<DashboardUiState> = _uiState.asStateFlow()
 
     init {
-        loadDashboard()
-    }
-
-    fun loadDashboard() {
         viewModelScope.launch {
-            _uiState.value = DashboardUiState(isLoading = true)
-            try {
-                val data = getDashboardDataUseCase()
-                _uiState.value = DashboardUiState(isLoading = false, data = data)
-            } catch (e: Exception) {
-                _uiState.value = DashboardUiState(isLoading = false)
+            transactionRepository.getAllTransactions().collectLatest {
+                _uiState.value = DashboardUiState(isLoading = true, data = _uiState.value.data)
+                try {
+                    val data = getDashboardDataUseCase()
+                    _uiState.value = DashboardUiState(isLoading = false, data = data)
+                } catch (e: Exception) {
+                    _uiState.value = DashboardUiState(isLoading = false)
+                }
             }
         }
     }

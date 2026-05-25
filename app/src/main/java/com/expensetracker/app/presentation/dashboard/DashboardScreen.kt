@@ -4,12 +4,15 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -94,10 +97,14 @@ fun DashboardScreen(
                     )
                 }
 
-                AnimatedVisibility(visible = expanded) {
+                AnimatedVisibility(
+                    visible = expanded,
+                    enter = fadeIn(tween(200)) + slideInVertically(tween(200)) { it / 2 },
+                    exit = fadeOut(tween(150)) + slideOutVertically(tween(150)) { it / 2 }
+                ) {
                     Column(
                         modifier = Modifier
-                            .padding(bottom = 72.dp)
+                            .offset(y = (-72).dp)
                             .width(160.dp),
                         horizontalAlignment = Alignment.End
                     ) {
