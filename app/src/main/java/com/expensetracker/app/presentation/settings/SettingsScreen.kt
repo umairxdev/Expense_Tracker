@@ -12,8 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -31,6 +34,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -56,11 +62,13 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
+    var showPrivacy by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MatteBlack)
+            .statusBarsPadding()
     ) {
         Row(
             modifier = Modifier
@@ -82,6 +90,7 @@ fun SettingsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 20.dp),
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
@@ -174,7 +183,7 @@ fun SettingsScreen(
             SettingsMenuItem(
                 icon = Icons.Filled.Shield,
                 label = "Privacy Policy",
-                onClick = { }
+                onClick = { showPrivacy = true }
             )
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -224,6 +233,57 @@ fun SettingsScreen(
             text = { Text(state.resetMessage, color = MutedWhite) },
             confirmButton = {
                 TextButton(onClick = { viewModel.dismissResetResult() }) {
+                    Text("OK", color = EmeraldGreen)
+                }
+            }
+        )
+    }
+
+    if (showPrivacy) {
+        AlertDialog(
+            onDismissRequest = { showPrivacy = false },
+            containerColor = DarkCardElevated,
+            title = {
+                Text("Privacy Policy", color = SoftWhite, fontWeight = FontWeight.Bold)
+            },
+            text = {
+                Column {
+                    Text(
+                        "Your data belongs to you.",
+                        color = SoftWhite,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 15.sp
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        "ExpenseTracker does not collect, store, or transmit any personal data. " +
+                                "All your financial information, transactions, budgets, and settings are stored " +
+                                "exclusively on your device in a local database.",
+                        color = MutedWhite,
+                        fontSize = 13.sp,
+                        lineHeight = 20.sp
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        "No internet connection is required to use this app. " +
+                                "We do not use analytics services, crash reporting, or third-party SDKs " +
+                                "that access your data.",
+                        color = MutedWhite,
+                        fontSize = 13.sp,
+                        lineHeight = 20.sp
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        "If you choose to export or share data (backup or PDF), " +
+                                "that action is initiated by you and controlled entirely by your device's share system.",
+                        color = MutedWhite.copy(alpha = 0.7f),
+                        fontSize = 12.sp,
+                        lineHeight = 18.sp
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showPrivacy = false }) {
                     Text("OK", color = EmeraldGreen)
                 }
             }

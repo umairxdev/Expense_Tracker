@@ -135,10 +135,12 @@ fun BarChart(
         maxOf(it.income, it.expense)
     } ?: 1.0
 
+    if (maxValue <= 0) return
+
     Column(modifier = modifier.fillMaxWidth()) {
-        data.forEach { trend ->
-            val incomeFraction = (trend.income / maxValue).toFloat().coerceIn(0f, 1f)
-            val expenseFraction = (trend.expense / maxValue).toFloat().coerceIn(0f, 1f)
+        data.take(12).forEach { trend ->
+            val incomeFraction = (trend.income / maxValue).toFloat().coerceIn(0f, 0.85f)
+            val expenseFraction = (trend.expense / maxValue).toFloat().coerceIn(0f, 0.85f)
 
             val animatedIncome by animateFloatAsState(
                 targetValue = incomeFraction,
@@ -151,43 +153,59 @@ fun BarChart(
                 label = "bar_expense_${trend.month}"
             )
 
-            Column(modifier = Modifier.padding(vertical = 4.dp)) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 3.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
-                    text = trend.month,
+                    text = trend.month.take(3),
                     color = DimWhite,
-                    fontSize = 11.sp,
-                    modifier = Modifier.padding(bottom = 4.dp)
+                    fontSize = 10.sp,
+                    modifier = Modifier.width(28.dp)
                 )
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("$", color = EmeraldGreen, fontSize = 9.sp)
-                    Box(
-                        modifier = Modifier
-                            .width((animatedIncome * 200).dp)
-                            .height(6.dp)
-                            .clip(androidx.compose.foundation.shape.RoundedCornerShape(3.dp))
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        CurrencyUtils.format(trend.income),
-                        color = EmeraldGreen,
-                        fontSize = 9.sp
-                    )
-                }
-                Spacer(modifier = Modifier.height(2.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("$", color = ExpenseRed, fontSize = 9.sp)
-                    Box(
-                        modifier = Modifier
-                            .width((animatedExpense * 200).dp)
-                            .height(6.dp)
-                            .clip(androidx.compose.foundation.shape.RoundedCornerShape(3.dp))
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        CurrencyUtils.format(trend.expense),
-                        color = ExpenseRed,
-                        fontSize = 9.sp
-                    )
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(animatedIncome)
+                                .height(7.dp)
+                                .clip(androidx.compose.foundation.shape.RoundedCornerShape(4.dp))
+                                .background(EmeraldGreen.copy(alpha = 0.75f))
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            CurrencyUtils.format(trend.income),
+                            color = EmeraldGreen,
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(3.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(animatedExpense)
+                                .height(7.dp)
+                                .clip(androidx.compose.foundation.shape.RoundedCornerShape(4.dp))
+                                .background(ExpenseRed.copy(alpha = 0.65f))
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            CurrencyUtils.format(trend.expense),
+                            color = ExpenseRed,
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
                 }
             }
         }
