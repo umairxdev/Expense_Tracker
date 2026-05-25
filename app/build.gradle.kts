@@ -20,14 +20,30 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    // 🔐 SIGNING CONFIG (ADD THIS)
+    signingConfigs {
+        create("release") {
+            // path to your keystore file (put .jks inside app folder)
+            storeFile = file("expense-tracker.jks")
+
+            storePassword = "umair7025"
+            keyAlias = "expensekey"
+            keyPassword = "umair7025"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
+            // 🔐 IMPORTANT: attach signing config
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 
@@ -88,7 +104,7 @@ dependencies {
     // Gson
     implementation("com.google.code.gson:gson:2.11.0")
 
-    // Core Splash Screen
+    // Splash Screen
     implementation("androidx.core:core-splashscreen:1.0.1")
 
     // Debug
