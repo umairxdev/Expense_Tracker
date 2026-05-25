@@ -78,65 +78,37 @@ fun DashboardScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    var expanded by remember { mutableStateOf(false) }
+
     Scaffold(
         containerColor = MatteBlack,
         floatingActionButton = {
-            Box {
-                var expanded by remember { mutableStateOf(false) }
-                FloatingActionButton(
-                    onClick = { expanded = !expanded },
-                    containerColor = EmeraldGreen,
-                    contentColor = MatteBlack,
-                    shape = CircleShape,
-                    modifier = Modifier.size(56.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = "Add",
-                        modifier = Modifier.size(28.dp)
-                    )
-                }
-
-                AnimatedVisibility(
-                    visible = expanded,
-                    enter = fadeIn(tween(200)) + slideInVertically(tween(200)) { it / 2 },
-                    exit = fadeOut(tween(150)) + slideOutVertically(tween(150)) { it / 2 }
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .offset(y = (-72).dp)
-                            .width(160.dp),
-                        horizontalAlignment = Alignment.End
-                    ) {
-                        DashboardFloatingOption(
-                            label = "Add Income",
-                            color = EmeraldGreen,
-                            onClick = {
-                                expanded = false
-                                onNavigateToAddTransaction("INCOME")
-                            }
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        DashboardFloatingOption(
-                            label = "Add Expense",
-                            color = ExpenseRed,
-                            onClick = {
-                                expanded = false
-                                onNavigateToAddTransaction("EXPENSE")
-                            }
-                        )
-                    }
-                }
+            FloatingActionButton(
+                onClick = { expanded = !expanded },
+                containerColor = EmeraldGreen,
+                contentColor = MatteBlack,
+                shape = CircleShape,
+                modifier = Modifier.size(56.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = "Add",
+                    modifier = Modifier.size(28.dp)
+                )
             }
         }
     ) { padding ->
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp)
         ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 20.dp)
+            ) {
             Spacer(modifier = Modifier.height(16.dp))
 
             // Header
@@ -278,6 +250,37 @@ fun DashboardScreen(
 
                 Spacer(modifier = Modifier.height(100.dp))
             }
+        }
+
+        AnimatedVisibility(
+            visible = expanded,
+            enter = fadeIn(tween(200)) + slideInVertically(tween(200)) { it / 2 },
+            exit = fadeOut(tween(150)) + slideOutVertically(tween(150)) { it / 2 },
+            modifier = Modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 80.dp)
+        ) {
+            Column(
+                modifier = Modifier.width(160.dp),
+                horizontalAlignment = Alignment.End
+            ) {
+                DashboardFloatingOption(
+                    label = "Add Income",
+                    color = EmeraldGreen,
+                    onClick = {
+                        expanded = false
+                        onNavigateToAddTransaction("INCOME")
+                    }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                DashboardFloatingOption(
+                    label = "Add Expense",
+                    color = ExpenseRed,
+                    onClick = {
+                        expanded = false
+                        onNavigateToAddTransaction("EXPENSE")
+                    }
+                )
+            }
+        }
         }
     }
 }
