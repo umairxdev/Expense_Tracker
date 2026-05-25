@@ -1,7 +1,5 @@
 <div align="center">
   <br/>
-  <img src="app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="Pockit" width="96" height="96" style="border-radius: 22px;">
-  <br/>
   <h1>Pockit</h1>
   <p>
     <strong>A premium, offline-first personal finance tracker for Android.</strong>
@@ -78,15 +76,13 @@ The app combines **Clean Architecture** with an iOS-inspired design language —
 <div align="center">
   <table>
     <tr>
-      <td><img src="screenshots/splash.png" alt="Splash" width="200"/></td>
-      <td><img src="screenshots/dashboard.png" alt="Dashboard" width="200"/></td>
-      <td><img src="screenshots/analytics.png" alt="Analytics" width="200"/></td>
-      <td><img src="screenshots/history.png" alt="History" width="200"/></td>
+      <td><img src="splash.jpeg" alt="Splash" width="200"/></td>
+      <td><img src="dashboard.jpeg" alt="Dashboard" width="200"/></td>
+      <td><img src="analytics.jpeg" alt="Analytics" width="200"/></td>
+      <td><img src="history.jpeg" alt="History" width="200"/></td>
     </tr>
   </table>
 </div>
-
-> Screenshots will be added after the initial release. The app currently ships with a polished splash animation, onboarding flow, and full feature set.
 
 ---
 
