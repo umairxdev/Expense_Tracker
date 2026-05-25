@@ -1,12 +1,11 @@
 package com.expensetracker.app.presentation.settings
 
-import android.app.Application
-import android.content.Intent
-import android.net.Uri
-import androidx.core.content.FileProvider
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.expensetracker.app.core.utils.BackupManager
+import com.expensetracker.app.data.local.dao.BudgetDao
+import com.expensetracker.app.data.local.dao.CategoryDao
+import com.expensetracker.app.data.local.dao.RecurringExpenseDao
+import com.expensetracker.app.data.local.dao.TransactionDao
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,95 +15,53 @@ import javax.inject.Inject
 
 data class SettingsUiState(
     val appVersion: String = "1.0.0",
-    val isExporting: Boolean = false,
-    val isImporting: Boolean = false,
-    val showBackupResult: Boolean = false,
-    val backupMessage: String = ""
+    val showResetConfirm: Boolean = false,
+    val isResetting: Boolean = false,
+    val showResetResult: Boolean = false,
+    val resetMessage: String = ""
 )
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    application: Application,
-    private val backupManager: BackupManager
-) : AndroidViewModel(application) {
+    private val transactionDao: TransactionDao,
+    private val recurringExpenseDao: RecurringExpenseDao,
+    private val budgetDao: BudgetDao,
+    private val categoryDao: CategoryDao
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
 
-    fun dismissBackupResult() {
-        _uiState.value = _uiState.value.copy(showBackupResult = false)
+    fun showResetConfirm() {
+        _uiState.value = _uiState.value.copy(showResetConfirm = true)
     }
 
-    fun exportToUri(uri: Uri) {
+    fun dismissResetConfirm() {
+        _uiState.value = _uiState.value.copy(showResetConfirm = false)
+    }
+
+    fun dismissResetResult() {
+        _uiState.value = _uiState.value.copy(showResetResult = false)
+    }
+
+    fun confirmReset() {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isExporting = true)
+            _uiState.value = _uiState.value.copy(isResetting = true, showResetConfirm = false)
             try {
-                backupManager.exportToUri(uri)
+                transactionDao.deleteAll()
+                recurringExpenseDao.deleteAll()
+                budgetDao.deleteAll()
+                categoryDao.deleteNonDefault()
                 _uiState.value = _uiState.value.copy(
-                    isExporting = false,
-                    showBackupResult = true,
-                    backupMessage = "Backup exported successfully!"
+                    isResetting = false,
+                    showResetResult = true,
+                    resetMessage = "All app data has been cleared."
                 )
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
-                    isExporting = false,
-                    showBackupResult = true,
-                    backupMessage = "Export failed: ${e.message}"
-                )
-            }
-        }
-    }
-
-    fun importFromUri(uri: Uri) {
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isImporting = true)
-            try {
-                val result = backupManager.importFromUri(uri)
-                result.fold(
-                    onSuccess = { summary ->
-                        _uiState.value = _uiState.value.copy(
-                            isImporting = false,
-                            showBackupResult = true,
-                            backupMessage = summary
-                        )
-                    },
-                    onFailure = { error ->
-                        _uiState.value = _uiState.value.copy(
-                            isImporting = false,
-                            showBackupResult = true,
-                            backupMessage = "Import failed: ${error.message}"
-                        )
-                    }
-                )
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    isImporting = false,
-                    showBackupResult = true,
-                    backupMessage = "Import failed: ${e.message}"
-                )
-            }
-        }
-    }
-
-    fun shareBackup() {
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isExporting = true)
-            try {
-                val uri = backupManager.createLocalBackup()
-                val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                    type = "application/json"
-                    putExtra(Intent.EXTRA_STREAM, uri)
-                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                }
-                getApplication<Application>().startActivity(
-                    Intent.createChooser(shareIntent, "Share Backup")
-                )
-                _uiState.value = _uiState.value.copy(isExporting = false)
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    isExporting = false,
-                    showBackupResult = true,
-                    backupMessage = "Share failed: ${e.message}"
+                    isResetting = false,
+                    showResetResult = true,
+                    resetMessage = "Failed to reset: ${e.message}"
                 )
             }
         }

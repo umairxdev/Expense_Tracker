@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.RectF
 import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
 import android.net.Uri
@@ -29,43 +30,70 @@ class PdfReportGenerator @Inject constructor(
     private val transactionDao: TransactionDao
 ) {
     private val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+    private val monthDayFormat = SimpleDateFormat("MMM dd", Locale.getDefault())
+
+    private val margin = 44f
+    private val pageWidth = 507f
+    private val contentWidth = pageWidth - 2 * margin
+
     private val headerFont = Paint().apply {
-        color = Color.rgb(0, 200, 83)
-        textSize = 28f
-        typeface = Typeface.DEFAULT_BOLD
+        color = Color.rgb(30, 30, 30)
+        textSize = 26f
+        typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
         isAntiAlias = true
     }
-    private val titleFont = Paint().apply {
-        color = Color.WHITE
-        textSize = 18f
-        typeface = Typeface.DEFAULT_BOLD
+    private val subheaderFont = Paint().apply {
+        color = Color.rgb(120, 120, 120)
+        textSize = 11f
+        typeface = Typeface.DEFAULT
         isAntiAlias = true
     }
-    private val bodyFont = Paint().apply {
-        color = Color.rgb(200, 200, 200)
-        textSize = 12f
+    private val sectionFont = Paint().apply {
+        color = Color.rgb(50, 50, 50)
+        textSize = 14f
+        typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
         isAntiAlias = true
     }
-    private val smallFont = Paint().apply {
-        color = Color.rgb(150, 150, 150)
+    private val summaryLabelFont = Paint().apply {
+        color = Color.rgb(140, 140, 140)
         textSize = 10f
+        typeface = Typeface.DEFAULT
         isAntiAlias = true
     }
-    private val greenPaint = Paint().apply {
-        color = Color.rgb(0, 200, 83)
-        textSize = 14f
-        typeface = Typeface.DEFAULT_BOLD
+    private val summaryAmountFont = Paint().apply {
+        color = Color.rgb(30, 30, 30)
+        textSize = 18f
+        typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
         isAntiAlias = true
     }
-    private val redPaint = Paint().apply {
-        color = Color.rgb(244, 67, 54)
-        textSize = 14f
-        typeface = Typeface.DEFAULT_BOLD
+    private val tableHeaderFont = Paint().apply {
+        color = Color.rgb(100, 100, 100)
+        textSize = 9f
+        typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
         isAntiAlias = true
     }
-    private val whitePaint = Paint().apply {
-        color = Color.WHITE
-        textSize = 12f
+    private val tableRowFont = Paint().apply {
+        color = Color.rgb(50, 50, 50)
+        textSize = 10f
+        typeface = Typeface.DEFAULT
+        isAntiAlias = true
+    }
+    private val greenFont = Paint().apply {
+        color = Color.rgb(0, 160, 70)
+        textSize = 10f
+        typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
+        isAntiAlias = true
+    }
+    private val redFont = Paint().apply {
+        color = Color.rgb(210, 60, 50)
+        textSize = 10f
+        typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
+        isAntiAlias = true
+    }
+    private val noteFont = Paint().apply {
+        color = Color.rgb(160, 160, 160)
+        textSize = 8f
+        typeface = Typeface.DEFAULT
         isAntiAlias = true
     }
 
@@ -83,23 +111,26 @@ class PdfReportGenerator @Inject constructor(
         val page = document.startPage(pageInfo)
         val canvas: Canvas = page.canvas
 
-        var y = 40f
-        val margin = 40f
-        val pageWidth = 515f
+        canvas.drawColor(Color.rgb(248, 248, 248))
 
-        drawHeader(canvas, y)
-        y += 50f
+        var y = 36f
 
-        y = drawDateRange(canvas, y, margin, filter)
-        y += 20f
+        y = drawHeader(canvas, y, filter)
+        y += 8f
+        y = drawDivider(canvas, y)
+        y += 24f
 
-        y = drawSummary(canvas, y, margin, pageWidth, totalIncome, totalExpense, balance)
-        y += 30f
+        y = drawSummary(canvas, y, totalIncome, totalExpense, balance)
+        y += 8f
+        y = drawDivider(canvas, y)
+        y += 24f
 
-        y = drawBarChart(canvas, y, margin, pageWidth, transactions)
-        y += 30f
+        y = drawBarChart(canvas, y, transactions)
+        y += 8f
+        y = drawDivider(canvas, y)
+        y += 24f
 
-        y = drawTransactionTable(canvas, y, margin, pageWidth, transactions)
+        drawTransactionTable(canvas, y, transactions)
 
         document.finishPage(page)
         context.contentResolver.openOutputStream(uri)?.use { outputStream: OutputStream ->
@@ -108,73 +139,99 @@ class PdfReportGenerator @Inject constructor(
         document.close()
     }
 
-    private fun drawHeader(canvas: Canvas, y: Float) {
-        headerFont.textAlign = Paint.Align.CENTER
-        canvas.drawText("EXPENSE TRACKER", 595f / 2, y, headerFont)
-        headerFont.textAlign = Paint.Align.LEFT
-    }
-
-    private fun drawDateRange(canvas: Canvas, y: Float, margin: Float, filter: ReportFilter): Float {
+    private fun drawHeader(canvas: Canvas, y: Float, filter: ReportFilter): Float {
         var cy = y
-        canvas.drawRect(margin, cy, 595f - margin, cy + 30f, Paint().apply {
+        canvas.drawRect(0f, 0f, 595f, 80f, Paint().apply {
             color = Color.rgb(30, 30, 30)
         })
-        titleFont.textAlign = Paint.Align.CENTER
+
+        headerFont.color = Color.WHITE
+        headerFont.textAlign = Paint.Align.CENTER
+        canvas.drawText("EXPENSE TRACKER", 595f / 2, 34f, headerFont)
+
+        subheaderFont.color = Color.rgb(180, 180, 180)
+        subheaderFont.textAlign = Paint.Align.CENTER
         canvas.drawText(
-            "${dateFormat.format(Date(filter.startDate))} - ${dateFormat.format(Date(filter.endDate))}",
-            595f / 2, cy + 20f, titleFont
+            "Financial Statement",
+            595f / 2, 54f, subheaderFont
         )
-        titleFont.textAlign = Paint.Align.LEFT
-        return cy + 40f
+
+        val periodText = "${dateFormat.format(Date(filter.startDate))}  —  ${dateFormat.format(Date(filter.endDate))}"
+        subheaderFont.color = Color.rgb(150, 150, 150)
+        canvas.drawText(periodText, 595f / 2, 70f, subheaderFont)
+
+        cy = 96f
+        return cy
+    }
+
+    private fun drawDivider(canvas: Canvas, y: Float): Float {
+        val paint = Paint().apply {
+            color = Color.rgb(220, 220, 220)
+            strokeWidth = 1f
+        }
+        canvas.drawLine(margin, y, 595f - margin, y, paint)
+        return y + 2f
     }
 
     private fun drawSummary(
-        canvas: Canvas, y: Float, margin: Float, pageWidth: Float,
+        canvas: Canvas, y: Float,
         totalIncome: Double, totalExpense: Double, balance: Double
     ): Float {
         var cy = y
-        titleFont.textAlign = Paint.Align.CENTER
-        canvas.drawText("SUMMARY", 595f / 2, cy, titleFont)
-        titleFont.textAlign = Paint.Align.LEFT
-        cy += 25f
 
-        val colWidth = pageWidth / 3
-        val labels = listOf("Income", "Expenses", "Balance")
-        val amounts = listOf(
-            CurrencyUtils.format(totalIncome),
-            CurrencyUtils.format(totalExpense),
-            CurrencyUtils.format(balance)
+        sectionFont.color = Color.rgb(50, 50, 50)
+        canvas.drawText("Summary", margin, cy, sectionFont)
+        cy += 20f
+
+        val boxWidth = contentWidth / 3 - 8f
+        val boxes = listOf(
+            Triple("Total Income", CurrencyUtils.format(totalIncome), Color.rgb(0, 160, 70)),
+            Triple("Total Expenses", CurrencyUtils.format(totalExpense), Color.rgb(210, 60, 50)),
+            Triple("Balance", CurrencyUtils.format(balance), if (balance >= 0) Color.rgb(0, 160, 70) else Color.rgb(210, 60, 50))
         )
-        val colors = listOf(greenPaint, redPaint,
-            if (balance >= 0) greenPaint else redPaint)
 
-        labels.forEachIndexed { i, label ->
-            val cx = margin + colWidth * i
-            smallFont.textAlign = Paint.Align.CENTER
-            canvas.drawText(label, cx + colWidth / 2, cy, smallFont)
-            smallFont.textAlign = Paint.Align.LEFT
-            colors[i].textAlign = Paint.Align.CENTER
-            canvas.drawText(amounts[i], cx + colWidth / 2, cy + 20f, colors[i])
-            colors[i].textAlign = Paint.Align.LEFT
+        val boxBgPaint = Paint().apply {
+            color = Color.WHITE
+            isAntiAlias = true
+        }
+        val boxStrokePaint = Paint().apply {
+            color = Color.rgb(230, 230, 230)
+            style = Paint.Style.STROKE
+            strokeWidth = 1f
+            isAntiAlias = true
         }
 
-        cy += 35f
+        boxes.forEachIndexed { i, (label, amount, amountColor) ->
+            val left = margin + i * (boxWidth + 8f)
+            val top = cy
+            val right = left + boxWidth
+            val bottom = cy + 64f
 
-        canvas.drawLine(margin, cy, 595f - margin, cy, Paint().apply {
-            color = Color.rgb(60, 60, 60)
-            strokeWidth = 1f
-        })
-        return cy + 15f
+            val r = RectF(left, top, right, bottom)
+            canvas.drawRoundRect(r, 6f, 6f, boxBgPaint)
+            canvas.drawRoundRect(r, 6f, 6f, boxStrokePaint)
+
+            summaryLabelFont.textAlign = Paint.Align.CENTER
+            canvas.drawText(label, left + boxWidth / 2, top + 18f, summaryLabelFont)
+
+            summaryAmountFont.color = amountColor
+            summaryAmountFont.textAlign = Paint.Align.CENTER
+            canvas.drawText(amount, left + boxWidth / 2, top + 48f, summaryAmountFont)
+        }
+
+        summaryAmountFont.color = Color.rgb(30, 30, 30)
+        cy += 80f
+        return cy
     }
 
     private fun drawBarChart(
-        canvas: Canvas, y: Float, margin: Float, pageWidth: Float,
+        canvas: Canvas, y: Float,
         transactions: List<TransactionEntity>
     ): Float {
         var cy = y
 
         val dailyMap = transactions
-            .groupBy { dateFormat.format(Date(it.date)) }
+            .groupBy { monthDayFormat.format(Date(it.date)) }
             .mapValues { (_, txns) ->
                 txns.filter { it.type == "EXPENSE" }.sumOf { it.amount } to
                     txns.filter { it.type == "INCOME" }.sumOf { it.amount }
@@ -182,121 +239,159 @@ class PdfReportGenerator @Inject constructor(
             .toList()
             .take(7)
 
-        if (dailyMap.isEmpty()) return cy
+        sectionFont.color = Color.rgb(50, 50, 50)
+        canvas.drawText("Daily Trend", margin, cy, sectionFont)
+        cy += 20f
 
-        titleFont.textAlign = Paint.Align.CENTER
-        canvas.drawText("DAILY TREND (Last 7 Days)", 595f / 2, cy, titleFont)
-        titleFont.textAlign = Paint.Align.LEFT
-        cy += 25f
+        if (dailyMap.isEmpty()) return cy + 10f
 
-        val chartHeight = 100f
+        val chartHeight = 120f
+        val chartLeft = margin
+        val chartRight = 595f - margin
+        val chartWidth = chartRight - chartLeft
+
         val maxVal = dailyMap.maxOf { maxOf(it.second.first, it.second.second) }
-        if (maxVal <= 0) return cy + chartHeight + 20f
+        if (maxVal <= 0) return cy + chartHeight + 30f
 
-        val barWidth = (pageWidth - 40f) / dailyMap.size / 3
-        val chartTop = cy
-        val chartBottom = cy + chartHeight
+        val barGroupWidth = chartWidth / dailyMap.size
+        val barWidth = barGroupWidth * 0.28f
+        val barSpacing = barGroupWidth * 0.08f
+
+        val gridPaint = Paint().apply {
+            color = Color.rgb(235, 235, 235)
+            strokeWidth = 1f
+        }
+
+        for (i in 0..4) {
+            val yPos = cy + chartHeight - (chartHeight * i / 4f)
+            canvas.drawLine(chartLeft, yPos, chartRight, yPos, gridPaint)
+        }
 
         dailyMap.forEachIndexed { index, (date, amounts) ->
             val (expense, income) = amounts
-            val x = margin + index * (barWidth * 3 + 4f)
+            val x = chartLeft + index * barGroupWidth + barSpacing
 
             val expHeight = (expense / maxVal * chartHeight).toFloat()
             val incHeight = (income / maxVal * chartHeight).toFloat()
 
-            val expensePaint = Paint().apply { color = Color.rgb(244, 67, 54) }
-            canvas.drawRect(x, chartBottom - expHeight, x + barWidth, chartBottom, expensePaint)
-
-            val incomePaint = Paint().apply { color = Color.rgb(0, 200, 83) }
-            canvas.drawRect(x + barWidth + 2f, chartBottom - incHeight, x + barWidth * 2 + 2f, chartBottom, incomePaint)
-
-            if (index % 2 == 0) {
-                val dateLabel = date.takeLast(5)
-                smallFont.textAlign = Paint.Align.CENTER
-                canvas.drawText(dateLabel, x + barWidth, chartBottom + 12f, smallFont)
-                smallFont.textAlign = Paint.Align.LEFT
+            val expensePaint = Paint().apply {
+                color = Color.rgb(210, 60, 50)
             }
+            canvas.drawRect(x, (cy + chartHeight - expHeight), x + barWidth, cy + chartHeight, expensePaint)
+
+            val incomePaint = Paint().apply {
+                color = Color.rgb(0, 160, 70)
+            }
+            canvas.drawRect(x + barWidth + barSpacing * 2, (cy + chartHeight - incHeight), x + barWidth * 2 + barSpacing * 2, cy + chartHeight, incomePaint)
+
+            val labelPaint = Paint().apply {
+                color = Color.rgb(140, 140, 140)
+                textSize = 8f
+                isAntiAlias = true
+                textAlign = Paint.Align.CENTER
+            }
+            canvas.drawText(date, x + barGroupWidth / 2, cy + chartHeight + 14f, labelPaint)
         }
 
-        cy = chartBottom + 25f
-        canvas.drawLine(margin, cy, 595f - margin, cy, Paint().apply {
-            color = Color.rgb(60, 60, 60)
-            strokeWidth = 1f
-        })
-        return cy + 15f
-    }
-
-    private fun drawTransactionTable(
-        canvas: Canvas, y: Float, margin: Float, pageWidth: Float,
-        transactions: List<TransactionEntity>
-    ): Float {
-        var cy = y
-        titleFont.textAlign = Paint.Align.CENTER
-        canvas.drawText("TRANSACTIONS", 595f / 2, cy, titleFont)
-        titleFont.textAlign = Paint.Align.LEFT
-        cy += 25f
-
-        val cols = listOf(80f, 150f, 80f, 80f, 125f)
-        val headers = listOf("Date", "Category", "Type", "Amount", "Note")
-
-        val headerPaint = Paint().apply {
-            color = Color.rgb(0, 200, 83)
-            textSize = 11f
-            typeface = Typeface.DEFAULT_BOLD
+        val legendY = cy + chartHeight + 34f
+        val legendPaint = Paint().apply {
+            color = Color.rgb(140, 140, 140)
+            textSize = 9f
             isAntiAlias = true
         }
 
-        var cx = margin
+        val expenseLegendX = 595f / 2 - 60f
+        canvas.drawRect(expenseLegendX, legendY - 7f, expenseLegendX + 12f, legendY + 1f, Paint().apply {
+            color = Color.rgb(210, 60, 50)
+        })
+        canvas.drawText("Expense", expenseLegendX + 18f, legendY + 1f, legendPaint)
+
+        val incomeLegendX = 595f / 2 + 20f
+        canvas.drawRect(incomeLegendX, legendY - 7f, incomeLegendX + 12f, legendY + 1f, Paint().apply {
+            color = Color.rgb(0, 160, 70)
+        })
+        canvas.drawText("Income", incomeLegendX + 18f, legendY + 1f, legendPaint)
+
+        cy = legendY + 24f
+        return cy
+    }
+
+    private fun drawTransactionTable(
+        canvas: Canvas, y: Float,
+        transactions: List<TransactionEntity>
+    ) {
+        var cy = y
+
+        sectionFont.color = Color.rgb(50, 50, 50)
+        canvas.drawText("Transactions", margin, cy, sectionFont)
+        cy += 20f
+
+        val colWidths = listOf(90, 130, 55, 90, contentWidth.toInt() - 90 - 130 - 55 - 90)
+        val headers = listOf("DATE", "CATEGORY", "TYPE", "AMOUNT", "NOTE")
+        val colStarts = colWidths.scan(margin.toInt()) { acc, w -> acc + w }
+
+        val headerBgPaint = Paint().apply {
+            color = Color.rgb(245, 245, 245)
+        }
+        canvas.drawRect(margin, cy, 595f - margin, cy + 24f, headerBgPaint)
+
         headers.forEachIndexed { i, header ->
-            headerPaint.textAlign = if (i == cols.size - 1) Paint.Align.RIGHT else Paint.Align.LEFT
-            canvas.drawText(header, cx, cy, headerPaint)
-            cx += cols[i]
+            val align = if (i == 3) Paint.Align.RIGHT else Paint.Align.LEFT
+            tableHeaderFont.textAlign = align
+            val x = if (align == Paint.Align.RIGHT) colStarts[i] + colWidths[i] else colStarts[i]
+            canvas.drawText(header, x.toFloat(), cy + 16f, tableHeaderFont)
         }
 
-        cy += 8f
-        canvas.drawLine(margin, cy, 595f - margin, cy, Paint().apply {
-            color = Color.rgb(60, 60, 60)
-            strokeWidth = 1f
-        })
-        cy += 10f
+        cy += 24f
 
         val displayTransactions = transactions.take(50)
+        val altRowPaint = Paint().apply {
+            color = Color.rgb(252, 252, 252)
+        }
 
-        for (txn in displayTransactions) {
-            val dateStr = dateFormat.format(Date(txn.date))
-            val typePaint = if (txn.type == "INCOME") greenPaint else redPaint
-            val txnDatePaint = whitePaint
-
-            val rowData = listOf(
-                dateStr,
-                txn.category.replace("_", " ").lowercase().replaceFirstChar { it.uppercase() },
-                txn.type,
-                "${if (txn.type == "INCOME") "+" else "-"}${CurrencyUtils.format(txn.amount)}",
-                txn.note.ifEmpty { "" }
-            )
-
-            cx = margin
-            rowData.forEachIndexed { i, data ->
-                val p = if (i == 3) typePaint else if (i == 0) txnDatePaint else whitePaint
-                p.textAlign = if (i == cols.size - 1) Paint.Align.RIGHT else Paint.Align.LEFT
-                canvas.drawText(data, cx, cy, p)
-                cx += cols[i]
+        for ((rowIndex, txn) in displayTransactions.withIndex()) {
+            if (rowIndex % 2 == 1) {
+                canvas.drawRect(margin, cy, 595f - margin, cy + 22f, altRowPaint)
             }
-            cy += 16f
 
-            if (cy > 800f) break
-        }
+            val dateStr = dateFormat.format(Date(txn.date))
+            val categoryStr = txn.category.replace("_", " ")
+                .lowercase()
+                .replaceFirstChar { it.uppercase() }
+            val typeStr = txn.type
+            val amountStr = "${if (txn.type == "INCOME") "+" else "-"}${CurrencyUtils.format(txn.amount)}"
+            val noteStr = txn.note.ifEmpty { "" }
 
-        if (transactions.size > 50) {
-            cy += 10f
-            smallFont.textAlign = Paint.Align.CENTER
-            canvas.drawText(
-                "+ ${transactions.size - 50} more transactions",
-                595f / 2, cy, smallFont
+            val rowData = listOf(dateStr, categoryStr, typeStr, amountStr, noteStr)
+            val rowPaints = listOf(tableRowFont, tableRowFont, tableRowFont,
+                if (txn.type == "INCOME") greenFont else redFont,
+                noteFont
             )
-            smallFont.textAlign = Paint.Align.LEFT
-        }
 
-        return cy + 20f
+            rowData.forEachIndexed { i, data ->
+                val align = if (i == 3) Paint.Align.RIGHT else Paint.Align.LEFT
+                val paint = rowPaints[i]
+                paint.textAlign = align
+                val x = if (align == Paint.Align.RIGHT) colStarts[i] + colWidths[i] else colStarts[i]
+                val displayText = if (i == 4 && data.length > 16) data.take(16) + "..." else data
+                canvas.drawText(displayText, x.toFloat(), cy + 15f, paint)
+            }
+
+            cy += 22f
+
+            if (cy > 800f) {
+                val morePaint = Paint().apply {
+                    color = Color.rgb(140, 140, 140)
+                    textSize = 10f
+                    isAntiAlias = true
+                    textAlign = Paint.Align.CENTER
+                }
+                canvas.drawText(
+                    "+ ${transactions.size - rowIndex - 1} more transactions",
+                    595f / 2, cy + 16f, morePaint
+                )
+                break
+            }
+        }
     }
 }

@@ -1,8 +1,5 @@
 package com.expensetracker.app.presentation.settings
 
-import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,17 +17,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Backup
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Description
-import androidx.compose.material.icons.filled.FileDownload
-import androidx.compose.material.icons.filled.FileUpload
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Repeat
-import androidx.compose.material.icons.filled.Restore
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -46,9 +39,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.expensetracker.app.core.theme.CharcoalGray
 import com.expensetracker.app.core.theme.DarkCardElevated
 import com.expensetracker.app.core.theme.EmeraldGreen
+import com.expensetracker.app.core.theme.ExpenseRed
 import com.expensetracker.app.core.theme.MatteBlack
 import com.expensetracker.app.core.theme.MutedWhite
 import com.expensetracker.app.core.theme.SoftWhite
@@ -63,18 +56,6 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
-
-    val exportLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.CreateDocument("application/json")
-    ) { uri: Uri? ->
-        if (uri != null) viewModel.exportToUri(uri)
-    }
-
-    val importLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenDocument()
-    ) { uri: Uri? ->
-        if (uri != null) viewModel.importFromUri(uri)
-    }
 
     Column(
         modifier = Modifier
@@ -169,27 +150,15 @@ fun SettingsScreen(
             )
 
             SettingsMenuItem(
-                icon = Icons.Filled.FileDownload,
-                label = if (state.isExporting) "Exporting..." else "Export Backup",
-                onClick = { exportLauncher.launch("expense_tracker_backup.json") },
-                enabled = !state.isExporting && !state.isImporting
-            )
-            SettingsMenuItem(
-                icon = Icons.Filled.FileUpload,
-                label = if (state.isImporting) "Importing..." else "Import Backup",
-                onClick = { importLauncher.launch(arrayOf("application/json", "*/*")) },
-                enabled = !state.isExporting && !state.isImporting
-            )
-            SettingsMenuItem(
-                icon = Icons.Filled.Backup,
-                label = "Share Backup",
-                onClick = { viewModel.shareBackup() },
-                enabled = !state.isExporting
-            )
-            SettingsMenuItem(
-                icon = Icons.Filled.Restore,
+                icon = Icons.Filled.Description,
                 label = "Generate PDF Report",
                 onClick = onNavigateToReportGenerator
+            )
+            SettingsMenuItem(
+                icon = Icons.Filled.DeleteForever,
+                label = "Reset All Data",
+                onClick = { viewModel.showResetConfirm() },
+                tintColor = ExpenseRed
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -219,21 +188,42 @@ fun SettingsScreen(
         }
     }
 
-    if (state.showBackupResult) {
+    if (state.showResetConfirm) {
         AlertDialog(
-            onDismissRequest = { viewModel.dismissBackupResult() },
+            onDismissRequest = { viewModel.dismissResetConfirm() },
             containerColor = DarkCardElevated,
             title = {
+                Text("Reset All Data", color = SoftWhite, fontWeight = FontWeight.Bold)
+            },
+            text = {
                 Text(
-                    if (state.backupMessage.startsWith("Restored") || state.backupMessage.contains("success"))
-                        "Success" else "Error",
-                    color = SoftWhite,
-                    fontWeight = FontWeight.Bold
+                    "This will permanently delete all transactions, budgets, recurring payments, and custom categories. This action cannot be undone.",
+                    color = MutedWhite
                 )
             },
-            text = { Text(state.backupMessage, color = MutedWhite) },
             confirmButton = {
-                TextButton(onClick = { viewModel.dismissBackupResult() }) {
+                TextButton(onClick = { viewModel.confirmReset() }) {
+                    Text("Yes, Reset Everything", color = ExpenseRed)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.dismissResetConfirm() }) {
+                    Text("Cancel", color = MutedWhite)
+                }
+            }
+        )
+    }
+
+    if (state.showResetResult) {
+        AlertDialog(
+            onDismissRequest = { viewModel.dismissResetResult() },
+            containerColor = DarkCardElevated,
+            title = {
+                Text("Done", color = SoftWhite, fontWeight = FontWeight.Bold)
+            },
+            text = { Text(state.resetMessage, color = MutedWhite) },
+            confirmButton = {
+                TextButton(onClick = { viewModel.dismissResetResult() }) {
                     Text("OK", color = EmeraldGreen)
                 }
             }
@@ -246,24 +236,22 @@ private fun SettingsMenuItem(
     icon: ImageVector,
     label: String,
     onClick: () -> Unit,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    tintColor: androidx.compose.ui.graphics.Color = EmeraldGreen
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
             .background(DarkCardElevated)
-            .then(
-                if (enabled) Modifier.clickable(onClick = onClick)
-                else Modifier
-            )
+            .clickable(enabled = enabled, onClick = onClick)
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = EmeraldGreen,
+            tint = tintColor,
             modifier = Modifier.size(22.dp)
         )
         Spacer(modifier = Modifier.width(12.dp))
@@ -274,19 +262,11 @@ private fun SettingsMenuItem(
             fontWeight = FontWeight.Medium,
             modifier = Modifier.weight(1f)
         )
-        if (enabled) {
-            Icon(
-                imageVector = Icons.Filled.ChevronRight,
-                contentDescription = null,
-                tint = MutedWhite,
-                modifier = Modifier.size(20.dp)
-            )
-        } else {
-            CircularProgressIndicator(
-                modifier = Modifier.size(20.dp),
-                color = EmeraldGreen,
-                strokeWidth = 2.dp
-            )
-        }
+        Icon(
+            imageVector = Icons.Filled.ChevronRight,
+            contentDescription = null,
+            tint = MutedWhite,
+            modifier = Modifier.size(20.dp)
+        )
     }
 }

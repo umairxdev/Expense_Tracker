@@ -17,14 +17,19 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,10 +38,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.expensetracker.app.core.theme.CharcoalGray
+import com.expensetracker.app.core.theme.DarkCardElevated
 import com.expensetracker.app.core.theme.EmeraldGreen
+import com.expensetracker.app.core.theme.ExpenseRed
 import com.expensetracker.app.core.theme.MatteBlack
 import com.expensetracker.app.core.theme.MutedWhite
 import com.expensetracker.app.core.theme.SoftWhite
+import com.expensetracker.app.core.utils.CurrencyUtils
+import com.expensetracker.app.domain.model.Transaction
 import com.expensetracker.app.ui.components.EmptyState
 import com.expensetracker.app.ui.components.TransactionItem
 
@@ -46,6 +55,7 @@ fun HistoryScreen(
     viewModel: HistoryViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
+    var deleteTarget by remember { mutableStateOf<Transaction?>(null) }
 
     Column(
         modifier = Modifier
@@ -137,12 +147,43 @@ fun HistoryScreen(
                     ) { transaction ->
                         TransactionItem(
                             transaction = transaction,
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
+                            onDelete = { deleteTarget = transaction }
                         )
                     }
                     item { Spacer(modifier = Modifier.height(80.dp)) }
                 }
             }
         }
+    }
+
+    if (deleteTarget != null) {
+        val txn = deleteTarget!!
+        AlertDialog(
+            onDismissRequest = { deleteTarget = null },
+            containerColor = DarkCardElevated,
+            title = {
+                Text("Delete Transaction", color = SoftWhite, fontWeight = FontWeight.Bold)
+            },
+            text = {
+                Text(
+                    "Delete ${CurrencyUtils.format(txn.amount)} ${txn.category.lowercase().replace("_", " ")} from ${txn.type.name.lowercase().replaceFirstChar { it.uppercase() }}? This cannot be undone.",
+                    color = MutedWhite
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.deleteTransaction(txn)
+                    deleteTarget = null
+                }) {
+                    Text("Delete", color = ExpenseRed)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { deleteTarget = null }) {
+                    Text("Cancel", color = MutedWhite)
+                }
+            }
+        )
     }
 }
