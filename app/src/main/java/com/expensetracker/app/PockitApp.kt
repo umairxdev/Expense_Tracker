@@ -10,7 +10,7 @@ import com.expensetracker.app.core.utils.NotificationUtils
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
-class ExpenseTrackerApp : Application() {
+class PockitApp : Application() {
 
     override fun onCreate() {
         super.onCreate()

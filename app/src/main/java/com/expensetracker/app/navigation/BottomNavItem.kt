@@ -13,7 +13,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 
 data class BottomNavItem(
     val label: String,
-    val route: String,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector
 )
@@ -21,25 +20,21 @@ data class BottomNavItem(
 val bottomNavItems = listOf(
     BottomNavItem(
         label = "Home",
-        route = Screen.Dashboard.route,
         selectedIcon = Icons.Filled.Home,
         unselectedIcon = Icons.Outlined.Home
     ),
     BottomNavItem(
         label = "Analytics",
-        route = Screen.Analytics.route,
         selectedIcon = Icons.Filled.Analytics,
         unselectedIcon = Icons.Outlined.Analytics
     ),
     BottomNavItem(
         label = "History",
-        route = Screen.History.route,
         selectedIcon = Icons.Filled.ListAlt,
         unselectedIcon = Icons.Outlined.ListAlt
     ),
     BottomNavItem(
         label = "Settings",
-        route = Screen.Settings.route,
         selectedIcon = Icons.Filled.Person,
         unselectedIcon = Icons.Outlined.Person
     )

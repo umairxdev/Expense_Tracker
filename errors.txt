@@ -1,2 +1,0 @@
-> Task :app:compileDebugKotlin FAILED
-e: file:///C:/Users/Water%20Mark%20IT/Documents/projects/ExpenseTracker/app/src/main/java/com/expensetracker/app/ui/components/AnimatedCard.kt:130:14 Unresolved reference 'matchParentSize'.

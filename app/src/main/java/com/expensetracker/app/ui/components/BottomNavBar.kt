@@ -31,8 +31,8 @@ import com.expensetracker.app.navigation.bottomNavItems
 
 @Composable
 fun BottomNavBar(
-    currentRoute: String?,
-    onItemSelected: (String) -> Unit
+    selectedTab: Int,
+    onTabSelected: (Int) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -48,8 +48,8 @@ fun BottomNavBar(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            bottomNavItems.forEach { item ->
-                val isSelected = currentRoute == item.route
+            bottomNavItems.forEachIndexed { index, item ->
+                val isSelected = selectedTab == index
                 val iconColor by animateColorAsState(
                     targetValue = if (isSelected) EmeraldGreen else MaterialTheme.colorScheme.onSurfaceVariant,
                     animationSpec = tween(200),
@@ -60,7 +60,7 @@ fun BottomNavBar(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .padding(horizontal = 8.dp)
-                        .clickable { onItemSelected(item.route) }
+                        .clickable { onTabSelected(index) }
                 ) {
                     Icon(
                         imageVector = if (isSelected) item.selectedIcon else item.unselectedIcon,

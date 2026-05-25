@@ -67,7 +67,7 @@ private val LightColorScheme = lightColorScheme(
 enum class ThemeMode { SYSTEM, LIGHT, DARK }
 
 @Composable
-fun ExpenseTrackerTheme(
+fun PockitTheme(
     themeMode: ThemeMode = ThemeMode.SYSTEM,
     content: @Composable () -> Unit
 ) {

@@ -10,22 +10,20 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.expensetracker.app.presentation.analytics.AnalyticsScreen
 import com.expensetracker.app.presentation.categories.CategoriesScreen
-import com.expensetracker.app.presentation.dashboard.DashboardScreen
-import com.expensetracker.app.presentation.history.HistoryScreen
 import com.expensetracker.app.presentation.onboarding.OnboardingScreen
 import com.expensetracker.app.presentation.recurring.RecurringScreen
 import com.expensetracker.app.presentation.reports.ReportGeneratorScreen
 import com.expensetracker.app.presentation.reports.ReportsScreen
-import com.expensetracker.app.presentation.settings.SettingsScreen
 import com.expensetracker.app.presentation.splash.SplashScreen
 import com.expensetracker.app.presentation.transaction.AddTransactionScreen
 
 @Composable
 fun NavGraph(
     navController: NavHostController,
-    startDestination: String
+    startDestination: String,
+    selectedTab: Int = 0,
+    onTabSelected: (Int) -> Unit = {}
 ) {
     NavHost(
         navController = navController,
@@ -79,21 +77,23 @@ fun NavGraph(
             )
         }
         composable(Screen.Dashboard.route) {
-            DashboardScreen(
+            MainTabHost(
+                selectedTab = selectedTab,
+                onTabSelected = onTabSelected,
                 onNavigateToAddTransaction = { type ->
                     navController.navigate(Screen.AddTransaction.createRoute(type))
-                },
-                onNavigateToAnalytics = {
-                    navController.navigate(Screen.Analytics.route)
-                },
-                onNavigateToHistory = {
-                    navController.navigate(Screen.History.route)
                 },
                 onNavigateToRecurring = {
                     navController.navigate(Screen.Recurring.route)
                 },
                 onNavigateToReports = {
                     navController.navigate(Screen.Reports.route)
+                },
+                onNavigateToCategories = {
+                    navController.navigate(Screen.Categories.route)
+                },
+                onNavigateToReportGenerator = {
+                    navController.navigate(Screen.ReportGenerator.route)
                 }
             )
         }
@@ -112,18 +112,8 @@ fun NavGraph(
                 onNavigateBack = { navController.popBackStack() }
             )
         }
-        composable(Screen.Analytics.route) {
-            AnalyticsScreen(
-                onNavigateBack = { navController.popBackStack() }
-            )
-        }
         composable(Screen.Reports.route) {
             ReportsScreen(
-                onNavigateBack = { navController.popBackStack() }
-            )
-        }
-        composable(Screen.History.route) {
-            HistoryScreen(
                 onNavigateBack = { navController.popBackStack() }
             )
         }
@@ -135,23 +125,6 @@ fun NavGraph(
         composable(Screen.Recurring.route) {
             RecurringScreen(
                 onNavigateBack = { navController.popBackStack() }
-            )
-        }
-        composable(Screen.Settings.route) {
-            SettingsScreen(
-                onNavigateBack = { navController.popBackStack() },
-                onNavigateToCategories = {
-                    navController.navigate(Screen.Categories.route)
-                },
-                onNavigateToRecurring = {
-                    navController.navigate(Screen.Recurring.route)
-                },
-                onNavigateToReports = {
-                    navController.navigate(Screen.Reports.route)
-                },
-                onNavigateToReportGenerator = {
-                    navController.navigate(Screen.ReportGenerator.route)
-                }
             )
         }
         composable(Screen.ReportGenerator.route) {

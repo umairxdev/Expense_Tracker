@@ -36,18 +36,7 @@ class PdfReportGenerator @Inject constructor(
     private val pageWidth = 507f
     private val contentWidth = pageWidth - 2 * margin
 
-    private val headerFont = Paint().apply {
-        color = Color.rgb(30, 30, 30)
-        textSize = 26f
-        typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
-        isAntiAlias = true
-    }
-    private val subheaderFont = Paint().apply {
-        color = Color.rgb(120, 120, 120)
-        textSize = 11f
-        typeface = Typeface.DEFAULT
-        isAntiAlias = true
-    }
+    private val emeraldColor = Color.rgb(5, 150, 105)
     private val sectionFont = Paint().apply {
         color = Color.rgb(50, 50, 50)
         textSize = 14f
@@ -79,7 +68,7 @@ class PdfReportGenerator @Inject constructor(
         isAntiAlias = true
     }
     private val greenFont = Paint().apply {
-        color = Color.rgb(0, 160, 70)
+        color = Color.rgb(5, 150, 105)
         textSize = 10f
         typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
         isAntiAlias = true
@@ -141,26 +130,45 @@ class PdfReportGenerator @Inject constructor(
 
     private fun drawHeader(canvas: Canvas, y: Float, filter: ReportFilter): Float {
         var cy = y
-        canvas.drawRect(0f, 0f, 595f, 80f, Paint().apply {
-            color = Color.rgb(30, 30, 30)
-        })
+        val headerBgPaint = Paint().apply {
+            color = Color.rgb(25, 25, 30)
+        }
+        canvas.drawRect(0f, 0f, 595f, 74f, headerBgPaint)
 
-        headerFont.color = Color.WHITE
-        headerFont.textAlign = Paint.Align.CENTER
-        canvas.drawText("EXPENSE TRACKER", 595f / 2, 34f, headerFont)
+        val accentPaint = Paint().apply {
+            color = emeraldColor
+        }
+        canvas.drawRect(0f, 74f, 595f, 78f, accentPaint)
 
-        subheaderFont.color = Color.rgb(180, 180, 180)
-        subheaderFont.textAlign = Paint.Align.CENTER
-        canvas.drawText(
-            "Financial Statement",
-            595f / 2, 54f, subheaderFont
-        )
+        val brandFont = Paint().apply {
+            color = Color.WHITE
+            textSize = 28f
+            typeface = Typeface.create("sans-serif-medium", Typeface.BOLD)
+            isAntiAlias = true
+            textAlign = Paint.Align.LEFT
+        }
+        canvas.drawText("POCKIT", 44f, 32f, brandFont)
 
+        val subHeaderFont = Paint().apply {
+            color = Color.rgb(180, 180, 180)
+            textSize = 11f
+            typeface = Typeface.DEFAULT
+            isAntiAlias = true
+            textAlign = Paint.Align.LEFT
+        }
+        canvas.drawText("Financial Statement", 44f, 52f, subHeaderFont)
+
+        val dateRangePaint = Paint().apply {
+            color = Color.rgb(160, 160, 160)
+            textSize = 9f
+            typeface = Typeface.create("sans-serif", Typeface.NORMAL)
+            isAntiAlias = true
+            textAlign = Paint.Align.RIGHT
+        }
         val periodText = "${dateFormat.format(Date(filter.startDate))}  —  ${dateFormat.format(Date(filter.endDate))}"
-        subheaderFont.color = Color.rgb(150, 150, 150)
-        canvas.drawText(periodText, 595f / 2, 70f, subheaderFont)
+        canvas.drawText(periodText, 595f - 44f, 66f, dateRangePaint)
 
-        cy = 96f
+        cy = 94f
         return cy
     }
 
@@ -185,9 +193,9 @@ class PdfReportGenerator @Inject constructor(
 
         val boxWidth = contentWidth / 3 - 8f
         val boxes = listOf(
-            Triple("Total Income", CurrencyUtils.format(totalIncome), Color.rgb(0, 160, 70)),
+            Triple("Total Income", CurrencyUtils.format(totalIncome), emeraldColor),
             Triple("Total Expenses", CurrencyUtils.format(totalExpense), Color.rgb(210, 60, 50)),
-            Triple("Balance", CurrencyUtils.format(balance), if (balance >= 0) Color.rgb(0, 160, 70) else Color.rgb(210, 60, 50))
+            Triple("Balance", CurrencyUtils.format(balance), if (balance >= 0) emeraldColor else Color.rgb(210, 60, 50))
         )
 
         val boxBgPaint = Paint().apply {
@@ -280,7 +288,7 @@ class PdfReportGenerator @Inject constructor(
             canvas.drawRect(x, (cy + chartHeight - expHeight), x + barWidth, cy + chartHeight, expensePaint)
 
             val incomePaint = Paint().apply {
-                color = Color.rgb(0, 160, 70)
+                color = emeraldColor
             }
             canvas.drawRect(x + barWidth + barSpacing * 2, (cy + chartHeight - incHeight), x + barWidth * 2 + barSpacing * 2, cy + chartHeight, incomePaint)
 

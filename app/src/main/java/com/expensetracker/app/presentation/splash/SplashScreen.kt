@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import android.content.Context
@@ -25,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.expensetracker.app.core.theme.EmeraldGreen
+import com.expensetracker.app.ui.components.PockitLogo
 import kotlinx.coroutines.delay
 
 @Composable
@@ -63,35 +63,27 @@ fun SplashScreen(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box(
+            PockitLogo(
                 modifier = Modifier
-                    .size(80.dp)
                     .scale(scale.value)
-                    .alpha(alpha.value),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "$",
-                    fontSize = 36.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = EmeraldGreen
-                )
-            }
+                    .alpha(alpha.value)
+            )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             Text(
-                text = "ExpenseTracker",
-                fontSize = 22.sp,
+                text = "Pockit",
+                fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = EmeraldGreen,
                 modifier = Modifier.alpha(alpha.value)
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
             Text(
                 text = "Track smart. Spend wisely.",
+                fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                 modifier = Modifier.alpha(alpha.value)
             )

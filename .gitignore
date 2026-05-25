@@ -7,7 +7,7 @@
 /captures
 .externalNativeBuild
 .cxx
-local.properties
+/screenshots/
 *.apk
 *.aab
 *.ap_
@@ -19,15 +19,6 @@ out/
 .idea_modules/
 *.log
 *.hprof
-*.svg
-*.png
-*.jpg
-*.jpeg
-*.mp4
-*.mp3
-*.json
-*.xml
-*.proto
 Thumbs.db
 *.keystore
 !gradle/wrapper/gradle-wrapper.jar

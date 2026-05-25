@@ -15,6 +15,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -22,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.expensetracker.app.core.theme.ExpenseTrackerTheme
+import com.expensetracker.app.core.theme.PockitTheme
 import com.expensetracker.app.core.theme.ThemeMode
 import com.expensetracker.app.navigation.NavGraph
 import com.expensetracker.app.navigation.Screen
@@ -61,7 +62,7 @@ class MainActivity : ComponentActivity() {
                 catch (_: Exception) { ThemeMode.SYSTEM }
             }
 
-            ExpenseTrackerTheme(themeMode = themeMode) {
+            PockitTheme(themeMode = themeMode) {
                 MainApp()
             }
         }
@@ -74,29 +75,18 @@ fun MainApp() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    val showBottomBar = currentRoute in listOf(
-        Screen.Dashboard.route,
-        Screen.Analytics.route,
-        Screen.History.route,
-        Screen.Settings.route
-    )
+    val isOnTabScreen = currentRoute == Screen.Dashboard.route
+
+    var selectedTab by remember { mutableIntStateOf(0) }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
-            if (showBottomBar) {
+            if (isOnTabScreen) {
                 BottomNavBar(
-                    currentRoute = currentRoute,
-                    onItemSelected = { route ->
-                        if (route != currentRoute) {
-                            navController.navigate(route) {
-                                popUpTo(Screen.Dashboard.route) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        }
+                    selectedTab = selectedTab,
+                    onTabSelected = { index ->
+                        selectedTab = index
                     }
                 )
             }
@@ -110,7 +100,9 @@ fun MainApp() {
         ) {
             NavGraph(
                 navController = navController,
-                startDestination = Screen.Splash.route
+                startDestination = Screen.Splash.route,
+                selectedTab = selectedTab,
+                onTabSelected = { selectedTab = it }
             )
         }
     }

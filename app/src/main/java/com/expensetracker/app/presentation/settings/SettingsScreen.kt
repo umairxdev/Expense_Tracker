@@ -3,7 +3,6 @@ package com.expensetracker.app.presentation.settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,7 +15,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -54,6 +52,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.material3.MaterialTheme
 import com.expensetracker.app.core.theme.EmeraldGreen
 import com.expensetracker.app.core.theme.ExpenseRed
+import com.expensetracker.app.ui.components.PockitLogo
 import com.expensetracker.app.core.utils.CurrencyUtils
 
 @Composable
@@ -105,26 +104,16 @@ fun SettingsScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(vertical = 16.dp)
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(56.dp)
-                        .clip(CircleShape)
-                        .background(EmeraldGreen.copy(alpha = 0.15f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "$",
-                        color = EmeraldGreen,
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
+                PockitLogo(
+                    modifier = Modifier,
+                    sizeDp = 56
+                )
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
                     Text(
-                        text = "ExpenseTracker",
+                        text = "Pockit",
                         color = MaterialTheme.colorScheme.onSurface,
-                        fontSize = 18.sp,
+                        fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
@@ -298,7 +287,7 @@ fun SettingsScreen(
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
-                        "ExpenseTracker does not collect, store, or transmit any personal data. " +
+                        "Pockit does not collect, store, or transmit any personal data. " +
                                 "All your financial information, transactions, budgets, and settings are stored " +
                                         "exclusively on your device in a local database.",
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
