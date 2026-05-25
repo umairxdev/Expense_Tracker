@@ -126,14 +126,6 @@ class AddTransactionViewModel @Inject constructor(
         }
     }
 
-    fun saveAfterWarning() {
-        val state = _uiState.value
-        val amountValue = state.amount.toDoubleOrNull() ?: return
-        viewModelScope.launch {
-            performSave(state.copy(showLowBalanceWarning = false), amountValue)
-        }
-    }
-
     private suspend fun performSave(state: AddTransactionUiState, amountValue: Double) {
         _uiState.value = state.copy(isSaving = true, error = null, showLowBalanceWarning = false)
 

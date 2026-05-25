@@ -2,13 +2,20 @@ package com.expensetracker.app.presentation.recurring
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.expensetracker.app.core.utils.CurrencyUtils
 import com.expensetracker.app.domain.model.ExpenseCategory
 import com.expensetracker.app.domain.model.RecurringExpense
 import com.expensetracker.app.domain.model.RecurringFrequency
+import com.expensetracker.app.domain.model.Transaction
+import com.expensetracker.app.domain.model.TransactionType
+import com.expensetracker.app.domain.repository.TransactionRepository
 import com.expensetracker.app.domain.usecase.ManageRecurringExpensesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -28,11 +35,15 @@ data class RecurringUiState(
 
 @HiltViewModel
 class RecurringViewModel @Inject constructor(
-    private val manageRecurringExpensesUseCase: ManageRecurringExpensesUseCase
+    private val manageRecurringExpensesUseCase: ManageRecurringExpensesUseCase,
+    private val transactionRepository: TransactionRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RecurringUiState())
     val uiState: StateFlow<RecurringUiState> = _uiState.asStateFlow()
+
+    private val _events = MutableSharedFlow<String>()
+    val events: SharedFlow<String> = _events.asSharedFlow()
 
     val categories = ExpenseCategory.entries.toList()
     val frequencies = RecurringFrequency.entries.toList()
@@ -109,6 +120,27 @@ class RecurringViewModel @Inject constructor(
                 isSaving = false
             )
             loadExpenses()
+        }
+    }
+
+    fun quickAddTransaction(expense: RecurringExpense) {
+        viewModelScope.launch {
+            val balance = transactionRepository.getBalance()
+            if (expense.amount > balance) {
+                _events.emit("INSUFFICIENT_BALANCE:${expense.amount}:${balance}")
+                return@launch
+            }
+            val transaction = Transaction(
+                amount = expense.amount,
+                type = TransactionType.EXPENSE,
+                category = expense.category,
+                date = System.currentTimeMillis(),
+                note = "Recurring: ${expense.title}",
+                isRecurring = true,
+                recurringId = expense.id
+            )
+            transactionRepository.addTransaction(transaction)
+            _events.emit("${CurrencyUtils.format(expense.amount)} logged from \"${expense.title}\"")
         }
     }
 

@@ -340,7 +340,7 @@ fun AddTransactionScreen(
                 Icon(Icons.Filled.Warning, contentDescription = null, tint = ExpenseRed, modifier = Modifier.size(32.dp))
             },
             title = {
-                Text("Low Balance Warning", color = SoftWhite, fontWeight = FontWeight.Bold)
+                Text("Insufficient Balance", color = SoftWhite, fontWeight = FontWeight.Bold)
             },
             text = {
                 Column {
@@ -350,20 +350,15 @@ fun AddTransactionScreen(
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        "Your balance may go negative. Save anyway?",
+                        "Balance cannot go negative. Please reduce the amount or add income first.",
                         color = MutedWhite.copy(alpha = 0.7f),
                         fontSize = 13.sp
                     )
                 }
             },
             confirmButton = {
-                TextButton(onClick = { viewModel.saveAfterWarning() }) {
-                    Text("Save Anyway", color = ExpenseRed)
-                }
-            },
-            dismissButton = {
                 TextButton(onClick = { viewModel.dismissLowBalanceWarning() }) {
-                    Text("Cancel", color = MutedWhite)
+                    Text("OK", color = EmeraldGreen)
                 }
             }
         )
